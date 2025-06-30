@@ -9,9 +9,9 @@ echo "Listing zip files:"
 ls -la *.zip
 
 # DynamoDBテーブルの作成
-echo "Creating DynamoDB table: $DYNAMODB_TABLE_VERIFIER_FRONTEND"
+echo "Creating DynamoDB table: $DYNAMODB_TABLE"
 awslocal dynamodb create-table \
-    --table-name "$DYNAMODB_TABLE_VERIFIER_FRONTEND" \
+    --table-name "$DYNAMODB_TABLE" \
     --attribute-definitions \
         AttributeName=key,AttributeType=S \
     --key-schema \
@@ -33,7 +33,7 @@ awslocal lambda create-function \
     --handler index.handler \
     --zip-file fileb://lambda.zip \
     --role arn:aws:iam::000000000000:role/lambda-role \
-    --environment "Variables={DYNAMODB_TABLE_VERIFIER_FRONTEND=$DYNAMODB_TABLE_VERIFIER_FRONTEND,API_BASE_URL_VERIFIER_FRONTEND=$API_BASE_URL_VERIFIER_FRONTEND,API_VERSION=$API_VERSION,API_KEY=$API_KEY,ACCESS_TOKEN=$ACCESS_TOKEN,AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY,DYNAMODB_ENDPOINT=$DYNAMODB_ENDPOINT,AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION}"
+    --environment "Variables={DYNAMODB_TABLE=$DYNAMODB_TABLE,API_BASE_URL_VERIFIER_FRONTEND=$API_BASE_URL_VERIFIER_FRONTEND,API_VERSION=$API_VERSION,API_KEY=$API_KEY,ACCESS_TOKEN=$ACCESS_TOKEN,AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY,DYNAMODB_ENDPOINT=$DYNAMODB_ENDPOINT,AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION}"
 
 # エラーチェック
 if [ $? -ne 0 ]; then

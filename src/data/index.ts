@@ -1,6 +1,8 @@
-import { mDLDifinition } from './mDL';
+import { mDLPresentationDefinition } from './mDL';
+import { PresentationDefinitionJSON } from 'oid4vc-prex';
 
-export const presentationDefinition = (id: string) => ({
-  id: id,
-  input_descriptors: [mDLDifinition],
-});
+export type GeneratePresentationDefinition = (
+  id: string,
+) => PresentationDefinitionJSON;
+
+export { mDLPresentationDefinition };

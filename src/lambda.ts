@@ -1,19 +1,19 @@
 import { Hono } from 'hono';
+import { FrontendApi } from './adapters/input/FrontendApi';
+import { HonoConfiguration } from './di/aws-lambda/HonoConfiguration';
+import { getDI } from './di/aws-lambda';
 import { handle } from 'hono/aws-lambda';
-import { FrontendApiLambda } from './adapters/input/FrontendApiLambda';
-import { HonoConfiguration } from './di/HonoConfiguration';
-import { setupLambdaMiddleware } from './middleware/setup';
 
 const configuration = new HonoConfiguration();
-const api = new FrontendApiLambda(
-  configuration.homePath,
-  configuration.initPath,
-  configuration.resultPath
+const api = new FrontendApi(
+  configuration.getHomePath(),
+  configuration.getInitPath(),
+  configuration.getResultPath(),
+  getDI,
 );
 
 const app = new Hono()
-  .use(setupLambdaMiddleware)
-  .get('/', (c) => c.redirect(configuration.homePath))
+  .get('/', (c) => c.redirect(configuration.getHomePath()))
   .route('/', api.route);
 
 // export default app;

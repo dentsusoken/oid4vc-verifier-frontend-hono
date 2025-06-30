@@ -24,6 +24,6 @@ id = "c3d306b7436241e590580867d966b4ee"
 # [dev]
 # ip = "0.0.0.0"
 
-[[services]]
-binding = "BACKEND"
-service = "oid4vc-verifier-endpoint-hono"
+# [[services]]
+# binding = "BACKEND"
+# service = "oid4vc-verifier-endpoint-hono"

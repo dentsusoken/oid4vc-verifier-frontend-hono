@@ -1,28 +1,30 @@
-import { html } from 'hono/html';
+import { html, raw } from 'hono/html';
 import { FC } from 'hono/jsx';
 import { Card } from './components/card';
+import { toString } from 'qrcode';
 
 export type InitProps = {
   redirectUrl: string;
   homePath: string;
-  qr?: string;
+  device?: string;
   resultPath?: string;
 };
 
-export const Init: FC<InitProps> = ({
+export const Init: FC<InitProps> = async ({
   redirectUrl,
   homePath,
-  qr,
+  device,
   resultPath,
 }) => {
+  const qr = await toString(redirectUrl);
+
   return (
     <Card title="Verification Started">
       <>
-        {qr && (
-          <div
-            class="max-w-48 max-h-48 min-w-28 min-h-28 mx-auto"
-            dangerouslySetInnerHTML={{ __html: qr }}
-          />
+        {device !== 'mobile' && (
+          <div class="max-w-48 max-h-48 min-w-28 min-h-28 mx-auto">
+            {raw(qr)}
+          </div>
         )}
         <a
           href={redirectUrl}
@@ -33,7 +35,8 @@ export const Init: FC<InitProps> = ({
         <a href={homePath} className="text-blue-500 hover:underline">
           Go back to Home
         </a>
-        {resultPath &&
+        {device !== 'mobile' &&
+          resultPath &&
           html`
             <script>
               const startAt = Date.now();

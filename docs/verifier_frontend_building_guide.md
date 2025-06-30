@@ -91,6 +91,5 @@ sh ./shell/deploy_verifier_frontend.sh
 | `Secret` | `PUBLCI_URL`               | Verifier Frontend の URL（例：https://verifier-frontend.example.com）                       |
 | `Secret` | `API_BASE_URL`             | Verifier Endpoint の URL（例：https://verifier-endpoint.example.com）                       |
 | `Secret` | `INIT_TRANSACTION_PATH`    | Verifier Endpoint の API のパス（例：/api/init-transaction）                                |
-| `Secret` | `WALLET_RESPONSE_PATH`     | Verifier Endpoint の API のパス（例：/api/wallet-response）                                 |
-| `Secret` | `GET_WALLET_RESPONSE_PATH` | Verifier Endpoint の API のパス（例：/api/get-wallet-response）                             |
+| `Secret` | `GET_WALLET_RESPONSE_PATH` | Verifier Endpoint の API のパス（例：/api/wallet-response）                                 |
 | `Secret` | `WALLET_URL`               | Wallet アプリにリダイレクトするためのディープリンクの URL（例：https://wallet.example.com） |

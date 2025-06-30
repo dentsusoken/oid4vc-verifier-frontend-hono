@@ -1,18 +1,31 @@
-export interface Bindings {
-  AWS_ACCESS_KEY_ID: string;
-  AWS_SECRET_ACCESS_KEY: string;
-  TABLE_NAME: string;
-  API_BASE_URL_VERIFIER_FRONTEND: string;
+import { LambdaEvent, LambdaContext } from 'hono/aws-lambda';
+
+export type BaseBindings = {
+  API_BASE_URL: string;
   INIT_TRANSACTION_PATH: string;
-  WALLET_RESPONSE_PATH: string;
+  GET_WALLET_RESPONSE_PATH: string;
   WALLET_URL: string;
-  PUBLIC_URL_VERIFIER_FRONTEND: string;
+  PUBLIC_URL: string;
+};
+
+export type CloudflareBindings = BaseBindings & {
   PRESENTATION_ID_KV: KVNamespace;
   BACKEND: Service;
-  [key: string]: unknown;
-  DEPLOY_ENV: 'cloudflare' | 'lambda' | 'local';
-}
+};
 
-export interface Env {
-  Bindings: Bindings;
-}
+export type AwsBindings = BaseBindings & {
+  event: LambdaEvent;
+  lambdaContext: LambdaContext;
+};
+
+export type Bindings = CloudflareBindings | AwsBindings;
+
+export type CloudflareEnv = {
+  Bindings: CloudflareBindings;
+};
+
+export type AwsEnv = {
+  Bindings: AwsBindings;
+};
+
+export type Env = CloudflareEnv | AwsEnv;

@@ -1,8 +1,13 @@
-export * from './AbstractConfiguration';
-export * from './Configuration';
-export * from './HonoConfiguration';
-export * from './PortsInput';
-export * from './PortsInputImpl';
-export * from './PortsOut';
-export * from './PortsOutImpl';
-export * from './LambdaPortsOutImpl';
+import {
+  Configuration,
+  PortsInput,
+  PortsOut,
+} from 'oid4vc-verifier-frontend-core/di';
+import { Context } from 'hono';
+import { Env } from '../env';
+
+export type GetDI<T extends Env> = (c: Context<T>) => {
+  portsIn: PortsInput;
+  portsOut: PortsOut;
+  config: Configuration;
+};

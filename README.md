@@ -7,11 +7,9 @@
 ```bash
 API_BASE_URL_VERIFIER_FRONTEND = "http://localhost:4566"
 INIT_TRANSACTION_PATH = "/ui/presentations"
-GET_WALLET_RESPONSE_PATH = "/ui/wallet/response"
 WALLET_URL = "eudi-openid4vp:localhost:4566"
-WALLET_RESPONSE_PATH = "/ui/presentations/:presentationId"
+GET_WALLET_RESPONSE_PATH = "/ui/presentations/:presentationId"
 PUBLIC_URL_VERIFIER_FRONTEND = "http://localhost:8787"
-DEPLOY_ENV = "local"
 ```
 
 ### Install dependencies
@@ -49,11 +47,9 @@ npm run deploy
     ```bash
    API_BASE_URL_VERIFIER_FRONTEND=http://localhost:4566
    INIT_TRANSACTION_PATH=/ui/presentations
-   GET_WALLET_RESPONSE_PATH=/ui/wallet/response
    WALLET_URL=eudi-openid4vp://localhost:4566
-   WALLET_RESPONSE_PATH=/ui/presentations/:presentationId
+   GET_WALLET_RESPONSE_PATH=/ui/presentations/:presentationId
    PUBLIC_URL_VERIFIER_FRONTEND=http://localhost:8787
-   DEPLOY_ENV=local
     ```
 
 3. Rebuilding the Image and Starting the Container:
@@ -91,30 +87,34 @@ npm run deploy
    * SecretsManagerReadWrite
 
 3. Set Environment Variables for SecretsManager:
+
    ```bash
    API_BASE_URL_VERIFIER_FRONTEND=http://localhost:4566
    INIT_TRANSACTION_PATH=/ui/presentations
-   GET_WALLET_RESPONSE_PATH=/ui/wallet/response
    WALLET_URL=eudi-openid4vp://localhost:4566
-   WALLET_RESPONSE_PATH=/ui/presentations/:presentationId
+   GET_WALLET_RESPONSE_PATH=/ui/presentations/:presentationId
    PUBLIC_URL_VERIFIER_FRONTEND=http://localhost:8787
-   DYNAMODB_TABLE_VERIFIER_FRONTEND=PRESENTATION_ID
+   DYNAMODB_TABLE=PRESENTATION_ID
    ```
+
 4. Create .env
+
     ```bash
-   DYNAMODB_TABLE_VERIFIER_FRONTEND=PRESENTATION_ID
+   DYNAMODB_TABLE=PRESENTATION_ID
    AWS_DEFAULT_REGION=ap-northeast-1
    LAMBDA_ROLE_NAME=arn:aws:iam::xxx:role/role-name
    AWS_ACCESS_KEY_ID=YOUR_AWS_ACCESS_KEY_ID
    AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET_ACCESS_KEY
    ```
 
-4. Build:
+5. Build:
+
    ```bash
    docker build -t verifier-frontend:latest .
    ```
 
-5. Run:
+6. Run:
+
    ```bash
    docker run --env-file ./.env verifier-frontend:latest
    ```
