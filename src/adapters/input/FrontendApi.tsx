@@ -4,7 +4,6 @@ import { MdocVerifyHandlerImpl, mdlSchema } from 'mdoc-cbor-ts';
 import { Env } from '../../env';
 import { ErrorPage, Home, Init, Result, Template } from './views';
 import { InitTransactionController, ResultController } from './controller';
-import { mDLPresentationDefinition } from '../../data';
 import { GetDI } from '../../di';
 
 /**
@@ -365,12 +364,8 @@ export class FrontendApi<T extends Env> {
     try {
       const controller = new InitTransactionController(
         this.#getDI,
-        mDLPresentationDefinition,
         Init,
         ErrorPage,
-        {
-          enableLogging: this.#options.enableLogging,
-        },
       );
 
       if (this.#options.enableLogging) {
@@ -422,15 +417,7 @@ export class FrontendApi<T extends Env> {
    */
   resultHandler(): Handler<T> {
     try {
-      const controller = new ResultController(
-        this.#getDI,
-        Result,
-        this.#mdocVerifier,
-        ErrorPage,
-        {
-          enableLogging: this.#options.enableLogging,
-        },
-      );
+      const controller = new ResultController(this.#getDI, Result, ErrorPage);
 
       if (this.#options.enableLogging) {
         console.log('ResultController created successfully');

@@ -1,7 +1,7 @@
 import { Handler, Context } from 'hono';
 import { Env } from '../../../env';
 import { ContentfulStatusCode } from 'hono/utils/http-status';
-import { Configuration } from 'oid4vc-verifier-frontend-core/di';
+import { Configuration } from 'oid4vc-verifier-frontend-core';
 
 /**
  * Base controller interface for HTTP request handling

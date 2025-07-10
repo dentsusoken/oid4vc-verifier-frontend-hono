@@ -2,7 +2,7 @@ import {
   Configuration,
   PortsInput,
   PortsOut,
-} from 'oid4vc-verifier-frontend-core/di';
+} from 'oid4vc-verifier-frontend-core';
 import { Context } from 'hono';
 import { Env } from '../env';
 

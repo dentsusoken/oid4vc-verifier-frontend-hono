@@ -22,7 +22,7 @@
     "qrcode.react": "^4.2.0",
     "ua-parser-js": "^0.7.39",
     "uuid": "^10.0.0",
-    "zod": "^3.25.67"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@aws-cdk/aws-apigatewayv2-alpha": "^2.114.1-alpha.0",
@@ -42,5 +42,9 @@
     "tsx": "^4.6.0",
     "vitest": "^3.1.4",
     "wrangler": "^4.15.2"
+  },
+  "peerDependencies": {
+    "@vecrea/oid4vc-core": "^0.1.0",
+    "@vecrea/oid4vc-prex": "^0.1.0"
   }
 }

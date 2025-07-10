@@ -1,4 +1,4 @@
-import { InputDescriptorJSON } from 'oid4vc-prex';
+import { InputDescriptorJSON } from '@vecrea/oid4vc-prex';
 import { GeneratePresentationDefinition } from '.';
 
 export const mDLDifinition: InputDescriptorJSON = {
@@ -132,9 +132,8 @@ export const mDLDifinition: InputDescriptorJSON = {
   },
 };
 
-export const mDLPresentationDefinition: GeneratePresentationDefinition = (
-  id: string,
-) => ({
-  id: id,
-  input_descriptors: [mDLDifinition],
-});
+export const mDLPresentationDefinition: GeneratePresentationDefinition =
+  () => ({
+    id: 'org.iso.18013.5.1.mDL',
+    input_descriptors: [mDLDifinition],
+  });

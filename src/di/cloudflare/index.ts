@@ -28,7 +28,6 @@
  *
  * @public
  */
-export * from './HonoConfiguration';
-export * from './PortsInputImpl';
+export * from './ConfigurationImpl';
 export * from './PortsOutImpl';
 export * from './getDI';

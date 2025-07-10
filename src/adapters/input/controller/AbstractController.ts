@@ -3,7 +3,7 @@ import { HTTPException } from 'hono/http-exception';
 import { ContentfulStatusCode } from 'hono/utils/http-status';
 import { Controller } from './Controller';
 import { Env } from '../../../env';
-import { Configuration } from 'oid4vc-verifier-frontend-core/di';
+import { Configuration } from 'oid4vc-verifier-frontend-core';
 import { FC } from 'hono/jsx';
 import { ErrorPageProps } from '../views';
 
@@ -143,7 +143,7 @@ export abstract class AbstractController<T extends Env>
 
     try {
       // Get home path (may be async)
-      const homePath = await config.getHomePath();
+      const homePath = await config.homeViewPath();
 
       // Generate error view component
       const ViewComponent = this.errorView({

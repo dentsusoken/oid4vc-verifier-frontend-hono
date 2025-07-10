@@ -1,5 +1,7 @@
 import { Context } from 'hono';
-import { HonoConfiguration, PortsInputImpl, PortsOutImpl } from '.';
+import { ConfigurationImpl } from './ConfigurationImpl';
+import { PortsInputImpl } from 'oid4vc-verifier-frontend-core';
+import { PortsOutImpl } from './PortsOutImpl';
 import { CloudflareEnv } from '../../env';
 import { GetDI } from '..';
 
@@ -56,7 +58,7 @@ import { GetDI } from '..';
  *
  * @public
  */
-export const getDI: GetDI<CloudflareEnv> = (c) => {
+export const getDI: GetDI<CloudflareEnv> = (c: Context<CloudflareEnv>) => {
   // Validate context parameter
   if (!c) {
     throw new TypeError(
@@ -66,10 +68,10 @@ export const getDI: GetDI<CloudflareEnv> = (c) => {
 
   try {
     // Create configuration with environment validation
-    const config = new HonoConfiguration(c);
+    const config = new ConfigurationImpl(c);
 
     // Create output ports with proper error handling
-    const portsOut = new PortsOutImpl(c);
+    const portsOut = new PortsOutImpl(c, config);
 
     // Create input ports with dependency injection
     const portsIn = new PortsInputImpl(config, portsOut);

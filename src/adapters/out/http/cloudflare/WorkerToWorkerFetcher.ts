@@ -1,13 +1,11 @@
-import {
-  Fetcher,
-  GetRequestOptions,
-  PostRequestOptions,
-} from 'oid4vc-verifier-frontend-core/ports.out.http';
+import { Fetcher, HttpRequestOptions } from 'oid4vc-verifier-frontend-core';
 import { z } from 'zod';
 import {
   HttpError,
   HttpUtils,
-} from 'oid4vc-verifier-frontend-core/adapters.out.http';
+  GetRequestOptions,
+  PostRequestOptions,
+} from 'oid4vc-verifier-frontend-core';
 
 export class WorkerToWorkerFetcher implements Fetcher {
   #backend: Service;
@@ -37,7 +35,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
   get<T>(
     url: string,
     schema: z.ZodSchema<T>,
-    options?: GetRequestOptions,
+    options?: HttpRequestOptions,
   ): Promise<T> {
     const executeRequest = () => {
       const headers = HttpUtils.createJsonHeaders(false, options?.headers);
@@ -104,7 +102,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
     url: string,
     body: string,
     schema: z.ZodSchema<T>,
-    options?: PostRequestOptions,
+    options?: HttpRequestOptions,
   ): Promise<T> {
     const executeRequest = () => {
       const contentType = options?.contentType ?? 'application/json';
@@ -119,8 +117,6 @@ export class WorkerToWorkerFetcher implements Fetcher {
       if (options?.timeout) {
         setTimeout(() => controller.abort(), options.timeout);
       }
-
-      console.log('body :>> ', body);
 
       return this.#backend
         .fetch(url, {

@@ -1,4 +1,5 @@
 import { LambdaEvent, LambdaContext } from 'hono/aws-lambda';
+import { Session, SessionSchemas } from 'oid4vc-verifier-frontend-core';
 
 export type BaseBindings = {
   API_BASE_URL: string;
@@ -20,12 +21,18 @@ export type AwsBindings = BaseBindings & {
 
 export type Bindings = CloudflareBindings | AwsBindings;
 
+export type Variables = {
+  SESSION: Session<SessionSchemas>;
+};
+
 export type CloudflareEnv = {
   Bindings: CloudflareBindings;
+  Variables: Variables;
 };
 
 export type AwsEnv = {
   Bindings: AwsBindings;
+  Variables: Variables;
 };
 
 export type Env = CloudflareEnv | AwsEnv;

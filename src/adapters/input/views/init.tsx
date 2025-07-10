@@ -14,7 +14,7 @@ export interface InitProps {
   /** The route path to the home page for navigation */
   homePath: string;
   /** The detected device type (e.g., 'mobile', 'desktop') */
-  device?: string;
+  isMobile?: boolean;
   /** The route path to the result page for polling */
   resultPath?: string;
 }
@@ -75,7 +75,7 @@ export interface InitProps {
 export const Init: FC<InitProps> = async ({
   redirectUrl,
   homePath,
-  device,
+  isMobile,
   resultPath,
 }) => {
   // Validate required props
@@ -119,7 +119,6 @@ export const Init: FC<InitProps> = async ({
     qrCodeSvg = '';
   }
 
-  const isMobile = device === 'mobile';
   const shouldShowQR = !isMobile && qrCodeSvg;
   const shouldEnablePolling = !isMobile && resultPath;
 
