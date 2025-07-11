@@ -4,16 +4,32 @@ import {
   SessionBatch,
   SessionDeleteResult,
 } from 'oid4vc-verifier-frontend-core';
+import { DynamoDB } from '@vecrea/oid4vc-core';
+import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
-export class SessionKV implements Session<SessionSchemas> {
-  readonly #kv: KVNamespace;
+export const createDynamoDBClient = (
+  endpoint: string,
+  region: string,
+  config?: DynamoDBClientConfig,
+) => {
+  const client = new DynamoDBClient({
+    endpoint,
+    region,
+    ...config,
+  });
+  return DynamoDBDocumentClient.from(client);
+};
+
+export class SessionDynamoDB implements Session<SessionSchemas> {
+  readonly #dynamoDB: DynamoDB;
   readonly #sessionId: string;
   readonly #ttl: number;
 
   #loaded?: SessionSchemas;
 
-  constructor(kv: KVNamespace, sessionId: string, ttl: number) {
-    this.#kv = kv;
+  constructor(dynamoDB: DynamoDB, sessionId: string, ttl: number) {
+    this.#dynamoDB = dynamoDB;
     this.#sessionId = sessionId;
     this.#ttl = ttl;
   }
@@ -163,7 +179,7 @@ export class SessionKV implements Session<SessionSchemas> {
   }
 
   async save(): Promise<void> {
-    await this.#kv.put(this.#sessionId, JSON.stringify(this.#loaded), {
+    await this.#dynamoDB.put(this.#sessionId, JSON.stringify(this.#loaded), {
       expirationTtl: this.#ttl,
     });
   }
@@ -173,7 +189,7 @@ export class SessionKV implements Session<SessionSchemas> {
       return;
     }
 
-    const value = await this.#kv.get(this.#sessionId);
+    const value = await this.#dynamoDB.get(this.#sessionId);
     if (!value) {
       return;
     }

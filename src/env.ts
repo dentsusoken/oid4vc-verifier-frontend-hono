@@ -14,7 +14,12 @@ export type CloudflareBindings = BaseBindings & {
   BACKEND: Service;
 };
 
-export type AwsBindings = BaseBindings & {
+export type AwsSecrets = BaseBindings & {
+  DYNAMODB_ENDPOINT: string;
+  DYNAMODB_TABLE: string;
+};
+
+export type AwsBindings = {
   event: LambdaEvent;
   lambdaContext: LambdaContext;
 };
