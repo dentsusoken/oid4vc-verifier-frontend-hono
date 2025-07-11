@@ -1,8 +1,13 @@
-import { AbstractPortsOut, Configuration } from 'oid4vc-verifier-frontend-core';
+import {
+  AbstractPortsOut,
+  Configuration,
+  Fetcher,
+} from 'oid4vc-verifier-frontend-core';
 import { Context } from 'hono';
 import { CloudflareEnv } from '../../env';
 import { mDLPresentationDefinition } from '../../adapters/out/prex';
 import { mdocVerifier } from '../../adapters/out/mdoc/MdocVerifier';
+import { WorkerToWorkerFetcher } from '../../adapters/out/http/cloudflare';
 
 export class PortsOutImpl extends AbstractPortsOut {
   readonly #ctx: Context<CloudflareEnv>;
@@ -22,5 +27,12 @@ export class PortsOutImpl extends AbstractPortsOut {
 
   session() {
     return this.#ctx.get('SESSION');
+  }
+
+  fetcher(): Fetcher {
+    if (this.#ctx.env.BACKEND) {
+      return new WorkerToWorkerFetcher(this.#ctx.env.BACKEND);
+    }
+    return super.fetcher();
   }
 }

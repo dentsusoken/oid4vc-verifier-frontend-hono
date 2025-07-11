@@ -1,26 +1,9 @@
 import { Handler, Hono } from 'hono';
 import { jsxRenderer } from 'hono/jsx-renderer';
-import { MdocVerifyHandlerImpl, mdlSchema } from 'mdoc-cbor-ts';
 import { Env } from '../../env';
 import { ErrorPage, Home, Init, Result, Template } from './views';
 import { InitTransactionController, ResultController } from './controller';
 import { GetDI } from '../../di';
-
-/**
- * Configuration options for FrontendApi behavior
- *
- * @public
- */
-export interface FrontendApiOptions {
-  /** Whether to enable debug logging (default: false) */
-  enableLogging?: boolean;
-  /** Custom error message for 404 responses (default: "Page Not Found") */
-  notFoundMessage?: string;
-  /** Whether to include detailed error information in responses (default: false) */
-  includeErrorDetails?: boolean;
-  /** Custom template component for rendering pages */
-  templateComponent?: typeof Template;
-}
 
 /**
  * Frontend API router for the OID4VC verifier application
@@ -114,18 +97,6 @@ export class FrontendApi<T extends Env> {
   readonly #getDI: GetDI<T>;
 
   /**
-   * Configuration options for API behavior
-   * @private
-   */
-  readonly #options: Required<FrontendApiOptions>;
-
-  /**
-   * Cached MDOC verifier instance for performance optimization
-   * @private
-   */
-  readonly #mdocVerifier: MdocVerifyHandlerImpl;
-
-  /**
    * Creates a new FrontendApi instance
    *
    * Initializes the API router with the specified paths and dependency injection
@@ -157,7 +128,6 @@ export class FrontendApi<T extends Env> {
     initPath: string,
     resultPath: string,
     getDI: GetDI<T>,
-    options: FrontendApiOptions = {},
   ) {
     // Validate required parameters
     if (!homePath || typeof homePath !== 'string') {
@@ -197,27 +167,12 @@ export class FrontendApi<T extends Env> {
     this.#resultPath = resultPath;
     this.#getDI = getDI;
 
-    this.#options = {
-      enableLogging: false,
-      notFoundMessage: 'Page Not Found',
-      includeErrorDetails: false,
-      templateComponent: Template,
-      ...options,
-    };
-
-    // Initialize MDOC verifier once for reuse
-    this.#mdocVerifier = new MdocVerifyHandlerImpl({
-      'org.iso.18013.5.1': mdlSchema,
+    console.log('FrontendApi initialized:', {
+      homePath: this.#homePath,
+      initPath: this.#initPath,
+      resultPath: this.#resultPath,
+      timestamp: new Date().toISOString(),
     });
-
-    if (this.#options.enableLogging) {
-      console.log('FrontendApi initialized:', {
-        homePath: this.#homePath,
-        initPath: this.#initPath,
-        resultPath: this.#resultPath,
-        timestamp: new Date().toISOString(),
-      });
-    }
   }
 
   /**
@@ -258,26 +213,20 @@ export class FrontendApi<T extends Env> {
    */
   get route(): Hono<Env> {
     try {
-      const TemplateComponent = this.#options.templateComponent;
-
       const app = new Hono<Env>()
         .use(
           '*',
-          jsxRenderer(({ children }) => (
-            <TemplateComponent>{children}</TemplateComponent>
-          )),
+          jsxRenderer(({ children }) => <Template>{children}</Template>),
         )
         .get(this.#homePath, this.homeHandler())
         .get(this.#initPath, this.initHandler())
         .get(this.#resultPath, this.resultHandler())
         .get('*', this.notFoundHandler());
 
-      if (this.#options.enableLogging) {
-        console.log('Route configuration completed:', {
-          routes: [this.#homePath, this.#initPath, this.#resultPath, '*'],
-          timestamp: new Date().toISOString(),
-        });
-      }
+      console.log('Route configuration completed:', {
+        routes: [this.#homePath, this.#initPath, this.#resultPath, '*'],
+        timestamp: new Date().toISOString(),
+      });
 
       return app;
     } catch (error) {
@@ -309,13 +258,11 @@ export class FrontendApi<T extends Env> {
   homeHandler(): Handler<T> {
     return (c) => {
       try {
-        if (this.#options.enableLogging) {
-          console.log('Home page accessed:', {
-            path: c.req.path,
-            userAgent: c.req.raw.headers.get('user-agent'),
-            timestamp: new Date().toISOString(),
-          });
-        }
+        console.log('Home page accessed:', {
+          path: c.req.path,
+          userAgent: c.req.raw.headers.get('user-agent'),
+          timestamp: new Date().toISOString(),
+        });
 
         return c.render(<Home initTransactionPath={this.#initPath} />);
       } catch (error) {
@@ -368,9 +315,7 @@ export class FrontendApi<T extends Env> {
         ErrorPage,
       );
 
-      if (this.#options.enableLogging) {
-        console.log('InitTransactionController created successfully');
-      }
+      console.log('InitTransactionController created successfully');
 
       return controller.handler();
     } catch (error) {
@@ -419,9 +364,7 @@ export class FrontendApi<T extends Env> {
     try {
       const controller = new ResultController(this.#getDI, Result, ErrorPage);
 
-      if (this.#options.enableLogging) {
-        console.log('ResultController created successfully');
-      }
+      console.log('ResultController created successfully');
 
       return controller.handler();
     } catch (error) {
@@ -461,22 +404,17 @@ export class FrontendApi<T extends Env> {
   notFoundHandler(): Handler<Env> {
     return (c) => {
       try {
-        if (this.#options.enableLogging) {
-          console.log('404 error:', {
-            path: c.req.path,
-            method: c.req.method,
-            userAgent: c.req.raw.headers.get('user-agent'),
-            referer: c.req.raw.headers.get('referer'),
-            timestamp: new Date().toISOString(),
-          });
-        }
+        console.log('404 error:', {
+          path: c.req.path,
+          method: c.req.method,
+          userAgent: c.req.raw.headers.get('user-agent'),
+          referer: c.req.raw.headers.get('referer'),
+          timestamp: new Date().toISOString(),
+        });
 
         c.status(404);
         return c.render(
-          <ErrorPage
-            error={this.#options.notFoundMessage}
-            homePath={this.#homePath}
-          />,
+          <ErrorPage error="Page Not Found" homePath={this.#homePath} />,
         );
       } catch (error) {
         console.error('NotFound handler error:', {

@@ -1,5 +1,5 @@
 import { InputDescriptorJSON } from '@vecrea/oid4vc-prex';
-import { GeneratePresentationDefinition } from '.';
+import { GeneratePresentationDefinition } from 'oid4vc-verifier-frontend-core';
 
 export const mDLDifinition: InputDescriptorJSON = {
   id: 'org.iso.18013.5.1.mDL',
