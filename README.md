@@ -1,120 +1,191 @@
-# oid4vc-verifier-frontend-hono
+# OID4VC Verifier Frontend (Hono)
 
-## How to build
+A verifier frontend application for OpenID for Verifiable Credentials (OID4VC).
+Built with the Hono framework and runs on both Cloudflare Workers and AWS Lambda environments.
 
-### Create .dev.vars
+## Supported Environments
 
-```bash
-API_BASE_URL_VERIFIER_FRONTEND = "http://localhost:4566"
-INIT_TRANSACTION_PATH = "/ui/presentations"
-WALLET_URL = "eudi-openid4vp:localhost:4566"
-GET_WALLET_RESPONSE_PATH = "/ui/presentations/:presentationId"
-PUBLIC_URL_VERIFIER_FRONTEND = "http://localhost:8787"
+- **Cloudflare Workers**: Cloudflare's edge computing environment
+- **AWS Lambda**: AWS serverless execution environment
+
+## Environment Configuration
+
+### Cloudflare Workers Environment
+
+#### Required Environment Variables
+
+Configure the following environment variables in `wrangler.toml` or the Cloudflare dashboard:
+
+| Variable Name              | Description                         | Example                        |
+| -------------------------- | ----------------------------------- | ------------------------------ |
+| `API_BASE_URL`             | Backend API base URL                | `https://api.example.com`      |
+| `INIT_TRANSACTION_PATH`    | Transaction initialization API path | `/api/v1/init-transaction`     |
+| `GET_WALLET_RESPONSE_PATH` | Wallet response retrieval API path  | `/api/v1/wallet-response`      |
+| `WALLET_URL`               | Wallet application URL              | `wallet://example`             |
+| `PUBLIC_URL`               | Frontend public URL                 | `https://verifier.example.com` |
+
+#### Required Bindings
+
+##### KV Namespace
+```toml
+[[kv_namespaces]]
+binding = "PRESENTATION_ID_KV"
+id = "your-kv-namespace-id"
 ```
 
-### Install dependencies
+Used for storing presentation IDs and session information.
 
-npm install
+##### Service Binding (Optional)
+```toml
+[[services]]
+binding = "BACKEND"
+service = "your-backend-service-name"
+```
 
-### Run locally
+Configure this to enable Worker-to-Worker communication with the backend service.
 
+#### Deployment
+
+```bash
+# Development environment
 npm run dev
 
-### Deploy
-
+# Production environment
 npm run deploy
+```
 
-## How to emulate AWS Lambda　(localstack)
+### AWS Lambda Environment
 
-1. Clone or copy the following repositories into the `./build` directory:
-   - [`oid4vc-core`](https://github.com/dentsusoken/oid4vc-core.git)
-   - [`oid4vc-prex`](https://github.com/dentsusoken/oid4vc-prex.git)
-   - [`mdoc-cbor-ts`](https://github.com/dentsusoken/mdoc-cbor-ts.git)
+#### Required Environment Variables
 
-   ```bash
-   # If cloning new repositories
-   cd build
-   git clone https://github.com/dentsusoken/oid4vc-core.git
-   git clone https://github.com/dentsusoken/oid4vc-prex.git
-   git clone https://github.com/dentsusoken/mdoc-cbor-ts.git
-   
-   # Or if copying existing local development repositories
-   cp -r /path/to/local/oid4vc-core ./build/
-   cp -r /path/to/local/oid4vc-prex ./build/
-   cp -r /path/to/local/mdoc-cbor-ts ./build/
-   ```
-2. Create .env
-    ```bash
-   API_BASE_URL_VERIFIER_FRONTEND=http://localhost:4566
-   INIT_TRANSACTION_PATH=/ui/presentations
-   WALLET_URL=eudi-openid4vp://localhost:4566
-   GET_WALLET_RESPONSE_PATH=/ui/presentations/:presentationId
-   PUBLIC_URL_VERIFIER_FRONTEND=http://localhost:8787
-    ```
+Configure the following as Lambda function environment variables:
 
-3. Rebuilding the Image and Starting the Container:
-   ```bash
-   docker-compose up --build
-   ```
+| Variable Name               | Description                           | Example                                          |
+| --------------------------- | ------------------------------------- | ------------------------------------------------ |
+| `AWS_REGION`                | AWS region                            | `us-east-1`, `ap-northeast-1`                    |
+| `SECRETS_MANAGER_SECRET_ID` | AWS Secrets Manager secret identifier | `verifier-frontend-config`                       |
+| `SECRETS_MANAGER_ENDPOINT`  | Secrets Manager endpoint (optional)   | `https://secretsmanager.us-east-1.amazonaws.com` |
 
-## How to deploy AWS Lambda
+#### AWS Secrets Manager Configuration
 
-1. Clone or copy the following repositories into the `./build` directory:
-   - [`oid4vc-core`](https://github.com/dentsusoken/oid4vc-core.git)
-   - [`oid4vc-prex`](https://github.com/dentsusoken/oid4vc-prex.git)
-   - [`mdoc-cbor-ts`](https://github.com/dentsusoken/mdoc-cbor-ts.git)
+Create a secret in AWS Secrets Manager with the following JSON format:
 
-   ```bash
-   # If cloning new repositories
-   cd build
-   git clone https://github.com/dentsusoken/oid4vc-core.git
-   git clone https://github.com/dentsusoken/oid4vc-prex.git
-   git clone https://github.com/dentsusoken/mdoc-cbor-ts.git
-   
-   # Or if copying existing local development repositories
-   cp -r /path/to/local/oid4vc-core ./build/
-   cp -r /path/to/local/oid4vc-prex ./build/
-   cp -r /path/to/local/mdoc-cbor-ts ./build/
-   ```
+```json
+{
+  "API_BASE_URL": "https://api.example.com",
+  "INIT_TRANSACTION_PATH": "/api/v1/init-transaction",
+  "GET_WALLET_RESPONSE_PATH": "/api/v1/wallet-response",
+  "WALLET_URL": "https://wallet.example.com",
+  "PUBLIC_URL": "https://verifier.example.com",
+  "DYNAMODB_ENDPOINT": "https://dynamodb.us-east-1.amazonaws.com",
+  "DYNAMODB_TABLE": "verifier-frontend-sessions"
+}
+```
 
-2. IAM Role Configuration:
+#### Required AWS Resources
 
-   **Add to the IAM role you are using**
+##### DynamoDB Table
+- **Table Name**: Name specified in `DYNAMODB_TABLE`
+- **Purpose**: Session information storage
+- **Partition Key**: Configure according to application requirements
 
-   * AWSLambdaBasicExecutionRole
-   * AWSLambdaDynamoDBExecutionRole
-   * dynamodb:GetItem
-   * SecretsManagerReadWrite
+##### IAM Permissions
+The Lambda execution role requires the following permissions:
 
-3. Set Environment Variables for SecretsManager:
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": "arn:aws:secretsmanager:region:account:secret:secret-name"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+      ],
+      "Resource": "arn:aws:dynamodb:region:account:table/table-name"
+    }
+  ]
+}
+```
 
-   ```bash
-   API_BASE_URL_VERIFIER_FRONTEND=http://localhost:4566
-   INIT_TRANSACTION_PATH=/ui/presentations
-   WALLET_URL=eudi-openid4vp://localhost:4566
-   GET_WALLET_RESPONSE_PATH=/ui/presentations/:presentationId
-   PUBLIC_URL_VERIFIER_FRONTEND=http://localhost:8787
-   DYNAMODB_TABLE=PRESENTATION_ID
-   ```
+#### CDK Deployment
 
-4. Create .env
+When deploying with AWS CDK:
 
-    ```bash
-   DYNAMODB_TABLE=PRESENTATION_ID
-   AWS_DEFAULT_REGION=ap-northeast-1
-   LAMBDA_ROLE_NAME=arn:aws:iam::xxx:role/role-name
-   AWS_ACCESS_KEY_ID=YOUR_AWS_ACCESS_KEY_ID
-   AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET_ACCESS_KEY
-   ```
+```bash
+# Install dependencies
+npm install
 
-5. Build:
+# CDK bootstrap (first time only)
+npx cdk bootstrap
 
-   ```bash
-   docker build -t verifier-frontend:latest .
-   ```
+# Deploy
+npx cdk deploy
+```
 
-6. Run:
+## Architecture
 
-   ```bash
-   docker run --env-file ./.env verifier-frontend:latest
-   ```
+### Dependency Injection (DI)
+
+The application performs dependency injection according to each environment:
+
+- **Configuration**: Environment variable management
+- **PortsOut**: Access to external resources (session, HTTP communication, etc.)
+- **PortsIn**: Application entry points
+
+### Session Management
+
+- **Cloudflare**: Uses KV Namespace
+- **AWS Lambda**: Uses DynamoDB
+
+### HTTP Communication
+
+- **Cloudflare**: Worker-to-Worker communication via Service Binding (when configured), or standard fetch API
+- **AWS Lambda**: Standard fetch API
+
+## Development
+
+### Local Development
+
+```bash
+# Install dependencies
+npm install
+
+# Development in Cloudflare Workers environment
+npm run dev
+
+# Run tests
+npm run test
+
+# Build
+npm run build
+```
+
+### Environment Switching
+
+The application automatically detects the runtime environment and selects the appropriate implementation.
+
+## Troubleshooting
+
+### Cloudflare Workers
+
+- Verify that KV Namespace is correctly created
+- Verify that environment variables are configured in `wrangler.toml` or dashboard
+- Verify that Service Binding is correctly configured if required
+
+### AWS Lambda
+
+- Verify that Secrets Manager access permissions are configured
+- Verify that DynamoDB table is created with appropriate permissions
+- Verify that Lambda function environment variables are correctly configured
