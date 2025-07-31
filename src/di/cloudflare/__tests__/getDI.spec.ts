@@ -4,13 +4,13 @@ import { Context } from 'hono';
 import { CloudflareEnv } from '../../../env';
 import { ConfigurationImpl } from '../ConfigurationImpl';
 import { PortsOutImpl } from '../PortsOutImpl';
-import { PortsInputImpl } from 'oid4vc-verifier-frontend-core';
+import { PortsInputImpl } from '@vecrea/oid4vc-verifier-frontend-core';
 
 // Mock setup
 vi.mock('../ConfigurationImpl');
 vi.mock('../PortsOutImpl');
-vi.mock('oid4vc-verifier-frontend-core', async () => {
-  const actual = await vi.importActual('oid4vc-verifier-frontend-core');
+vi.mock('@vecrea/oid4vc-verifier-frontend-core', async () => {
+  const actual = await vi.importActual('@vecrea/oid4vc-verifier-frontend-core');
   return {
     ...actual,
     PortsInputImpl: vi.fn(),
@@ -95,14 +95,14 @@ describe('getDI', () => {
     it('should throw TypeError when context is null', () => {
       expect(() => getDI(null as any)).toThrow(TypeError);
       expect(() => getDI(null as any)).toThrow(
-        'Context parameter is required for dependency injection setup',
+        'Context parameter is required for dependency injection setup'
       );
     });
 
     it('should throw TypeError when context is undefined', () => {
       expect(() => getDI(undefined as any)).toThrow(TypeError);
       expect(() => getDI(undefined as any)).toThrow(
-        'Context parameter is required for dependency injection setup',
+        'Context parameter is required for dependency injection setup'
       );
     });
 
@@ -113,7 +113,7 @@ describe('getDI', () => {
       });
 
       expect(() => getDI(mockContext)).toThrow(
-        'Failed to initialize dependency injection container: Configuration setup failed. Please check that all required environment variables and bindings are configured.',
+        'Failed to initialize dependency injection container: Configuration setup failed. Please check that all required environment variables and bindings are configured.'
       );
     });
 
@@ -124,7 +124,7 @@ describe('getDI', () => {
       });
 
       expect(() => getDI(mockContext)).toThrow(
-        'Failed to initialize dependency injection container: PortsOut setup failed. Please check that all required environment variables and bindings are configured.',
+        'Failed to initialize dependency injection container: PortsOut setup failed. Please check that all required environment variables and bindings are configured.'
       );
     });
 
@@ -135,7 +135,7 @@ describe('getDI', () => {
       });
 
       expect(() => getDI(mockContext)).toThrow(
-        'Failed to initialize dependency injection container: PortsIn setup failed. Please check that all required environment variables and bindings are configured.',
+        'Failed to initialize dependency injection container: PortsIn setup failed. Please check that all required environment variables and bindings are configured.'
       );
     });
 
@@ -145,7 +145,7 @@ describe('getDI', () => {
       });
 
       expect(() => getDI(mockContext)).toThrow(
-        'Failed to initialize dependency injection container: Unknown error. Please check that all required environment variables and bindings are configured.',
+        'Failed to initialize dependency injection container: Unknown error. Please check that all required environment variables and bindings are configured.'
       );
     });
   });

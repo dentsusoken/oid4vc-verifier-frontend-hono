@@ -1,6 +1,6 @@
 import { Context } from 'hono';
 import { ConfigurationImpl } from './ConfigurationImpl';
-import { PortsInputImpl } from 'oid4vc-verifier-frontend-core';
+import { PortsInputImpl } from '@vecrea/oid4vc-verifier-frontend-core';
 import { PortsOutImpl } from './PortsOutImpl';
 import { CloudflareEnv } from '../../env';
 import { GetDI } from '..';
@@ -62,7 +62,7 @@ export const getDI: GetDI<CloudflareEnv> = (c: Context<CloudflareEnv>) => {
   // Validate context parameter
   if (!c) {
     throw new TypeError(
-      'Context parameter is required for dependency injection setup',
+      'Context parameter is required for dependency injection setup'
     );
   }
 
@@ -83,7 +83,7 @@ export const getDI: GetDI<CloudflareEnv> = (c: Context<CloudflareEnv>) => {
       error instanceof Error ? error.message : 'Unknown error';
     throw new Error(
       `Failed to initialize dependency injection container: ${errorMessage}. ` +
-        'Please check that all required environment variables and bindings are configured.',
+        'Please check that all required environment variables and bindings are configured.'
     );
   }
 };

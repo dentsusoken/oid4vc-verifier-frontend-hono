@@ -1,4 +1,7 @@
-import { AbstractPortsOut, Configuration } from 'oid4vc-verifier-frontend-core';
+import {
+  AbstractPortsOut,
+  Configuration,
+} from '@vecrea/oid4vc-verifier-frontend-core';
 import { Context } from 'hono';
 import { AwsEnv } from '../../env';
 import { mDLPresentationDefinition } from '../../adapters/out/prex';

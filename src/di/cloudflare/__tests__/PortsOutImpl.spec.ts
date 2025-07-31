@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { PortsOutImpl } from '../PortsOutImpl';
 import { Context } from 'hono';
 import { CloudflareEnv } from '../../../env';
-import { Configuration } from 'oid4vc-verifier-frontend-core';
+import { Configuration } from '@vecrea/oid4vc-verifier-frontend-core';
 
 describe('PortsOutImpl', () => {
   let mockContext: Partial<Context<CloudflareEnv>>;
@@ -40,7 +40,7 @@ describe('PortsOutImpl', () => {
 
     portsOut = new PortsOutImpl(
       mockContext as Context<CloudflareEnv>,
-      mockConfig,
+      mockConfig
     );
   });
 
@@ -58,7 +58,7 @@ describe('PortsOutImpl', () => {
       // verify that it has an actual value (could be function or object)
       expect(result).toBeDefined();
       expect(typeof result === 'object' || typeof result === 'function').toBe(
-        true,
+        true
       );
     });
   });

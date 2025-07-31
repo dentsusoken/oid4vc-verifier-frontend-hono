@@ -3,7 +3,7 @@ import { HTTPException } from 'hono/http-exception';
 import { ContentfulStatusCode } from 'hono/utils/http-status';
 import { Controller } from './Controller';
 import { Env } from '../../../env';
-import { Configuration } from 'oid4vc-verifier-frontend-core';
+import { Configuration } from '@vecrea/oid4vc-verifier-frontend-core';
 import { FC } from 'hono/jsx';
 import { ErrorPageProps } from '../views';
 
@@ -86,7 +86,7 @@ export abstract class AbstractController<T extends Env>
     context: Context<T>,
     config: Configuration,
     error: Error | string,
-    status?: ContentfulStatusCode,
+    status?: ContentfulStatusCode
   ): Promise<Response> {
     // Determine appropriate status code
     let errorStatus: ContentfulStatusCode = status || 500;
@@ -184,7 +184,11 @@ export abstract class AbstractController<T extends Env>
       // Throw HTTP exception as final fallback
       throw new HTTPException(500, {
         message: isDevelopment
-          ? `Critical error: ${renderError instanceof Error ? renderError.message : String(renderError)}`
+          ? `Critical error: ${
+              renderError instanceof Error
+                ? renderError.message
+                : String(renderError)
+            }`
           : 'Critical system error occurred',
       });
     }

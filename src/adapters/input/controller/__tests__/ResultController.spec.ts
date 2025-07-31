@@ -2,7 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Context } from 'hono';
 import { FC } from 'hono/jsx';
 import { ResultController } from '../ResultController';
-import { Configuration, PortsInput } from 'oid4vc-verifier-frontend-core';
+import {
+  Configuration,
+  PortsInput,
+} from '@vecrea/oid4vc-verifier-frontend-core';
 import { ResultProps, ErrorPageProps } from '../../views';
 import { Env } from '../../../../env';
 import { GetDI } from '../../../../di';
@@ -124,7 +127,9 @@ const mockResultView: FC<ResultProps> = ({ data, vpToken, homePath }) => {
   return {
     type: 'div',
     props: {
-      children: `Result: data=${JSON.stringify(data)}, vpToken=${vpToken}, homePath=${homePath}`,
+      children: `Result: data=${JSON.stringify(
+        data
+      )}, vpToken=${vpToken}, homePath=${homePath}`,
     },
   } as any;
 };
@@ -146,7 +151,7 @@ const mockErrorView: FC<ErrorPageProps> = ({ error, homePath }) => {
  */
 const createMockGetDI = (
   config: MockConfiguration,
-  portsIn: MockPortsInput,
+  portsIn: MockPortsInput
 ): GetDI<Env> => {
   return vi.fn().mockReturnValue({
     config,
@@ -159,7 +164,7 @@ const createMockGetDI = (
  * Mock Context for testing
  */
 const createMockContext = (
-  queryParams: Record<string, string> = {},
+  queryParams: Record<string, string> = {}
 ): Context<Env> => {
   const mockResponse = new Response('test');
   return {
@@ -195,27 +200,27 @@ describe('ResultController', () => {
   describe('constructor', () => {
     it('should create instance with valid parameters', () => {
       expect(
-        () => new ResultController(mockGetDI, mockResultView, mockErrorView),
+        () => new ResultController(mockGetDI, mockResultView, mockErrorView)
       ).not.toThrow();
     });
 
     it('should throw TypeError when getDI is null', () => {
       expect(
-        () => new ResultController(null as any, mockResultView, mockErrorView),
+        () => new ResultController(null as any, mockResultView, mockErrorView)
       ).toThrow(TypeError);
       expect(
-        () => new ResultController(null as any, mockResultView, mockErrorView),
+        () => new ResultController(null as any, mockResultView, mockErrorView)
       ).toThrow('getDI must be a function');
     });
 
     it('should throw TypeError when getDI is undefined', () => {
       expect(
         () =>
-          new ResultController(undefined as any, mockResultView, mockErrorView),
+          new ResultController(undefined as any, mockResultView, mockErrorView)
       ).toThrow(TypeError);
       expect(
         () =>
-          new ResultController(undefined as any, mockResultView, mockErrorView),
+          new ResultController(undefined as any, mockResultView, mockErrorView)
       ).toThrow('getDI must be a function');
     });
 
@@ -225,34 +230,34 @@ describe('ResultController', () => {
           new ResultController(
             'not-a-function' as any,
             mockResultView,
-            mockErrorView,
-          ),
+            mockErrorView
+          )
       ).toThrow(TypeError);
       expect(
         () =>
           new ResultController(
             'not-a-function' as any,
             mockResultView,
-            mockErrorView,
-          ),
+            mockErrorView
+          )
       ).toThrow('getDI must be a function');
     });
 
     it('should throw TypeError when View is null', () => {
       expect(
-        () => new ResultController(mockGetDI, null as any, mockErrorView),
+        () => new ResultController(mockGetDI, null as any, mockErrorView)
       ).toThrow(TypeError);
       expect(
-        () => new ResultController(mockGetDI, null as any, mockErrorView),
+        () => new ResultController(mockGetDI, null as any, mockErrorView)
       ).toThrow('View must be a React functional component');
     });
 
     it('should throw TypeError when View is undefined', () => {
       expect(
-        () => new ResultController(mockGetDI, undefined as any, mockErrorView),
+        () => new ResultController(mockGetDI, undefined as any, mockErrorView)
       ).toThrow(TypeError);
       expect(
-        () => new ResultController(mockGetDI, undefined as any, mockErrorView),
+        () => new ResultController(mockGetDI, undefined as any, mockErrorView)
       ).toThrow('View must be a React functional component');
     });
 
@@ -262,16 +267,16 @@ describe('ResultController', () => {
           new ResultController(
             mockGetDI,
             'not-a-function' as any,
-            mockErrorView,
-          ),
+            mockErrorView
+          )
       ).toThrow(TypeError);
       expect(
         () =>
           new ResultController(
             mockGetDI,
             'not-a-function' as any,
-            mockErrorView,
-          ),
+            mockErrorView
+          )
       ).toThrow('View must be a React functional component');
     });
 
@@ -279,7 +284,7 @@ describe('ResultController', () => {
       controller = new ResultController(
         mockGetDI,
         mockResultView,
-        mockErrorView,
+        mockErrorView
       );
       expect(controller).toBeInstanceOf(ResultController);
       // Note: We can't directly test inheritance chain, but the constructor should complete successfully
@@ -291,7 +296,7 @@ describe('ResultController', () => {
       controller = new ResultController(
         mockGetDI,
         mockResultView,
-        mockErrorView,
+        mockErrorView
       );
     });
 
@@ -321,16 +326,16 @@ describe('ResultController', () => {
 
         expect(mockGetDI).toHaveBeenCalledWith(mockContext);
         expect(mockPortsIn.getWalletResponse()).toHaveBeenCalledWith(
-          'test_response_code',
+          'test_response_code'
         );
         expect(mockContext.render).toHaveBeenCalledWith(
           expect.objectContaining({
             props: expect.objectContaining({
               children: expect.stringContaining(
-                'vpToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                'vpToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
               ),
             }),
-          }),
+          })
         );
         expect(result).toBeInstanceOf(Response);
       });
@@ -377,24 +382,24 @@ describe('ResultController', () => {
           expect.objectContaining({
             props: expect.objectContaining({
               children: expect.stringContaining(
-                `data=${JSON.stringify(testDocuments)}`,
+                `data=${JSON.stringify(testDocuments)}`
               ),
             }),
-          }),
+          })
         );
         expect(mockContext.render).toHaveBeenCalledWith(
           expect.objectContaining({
             props: expect.objectContaining({
               children: expect.stringContaining('homePath=/test-home'),
             }),
-          }),
+          })
         );
         expect(mockContext.render).toHaveBeenCalledWith(
           expect.objectContaining({
             props: expect.objectContaining({
               children: expect.stringContaining('vpToken=test_vp_token_123'),
             }),
-          }),
+          })
         );
       });
 
@@ -415,7 +420,7 @@ describe('ResultController', () => {
             props: expect.objectContaining({
               children: expect.stringContaining('data=[]'),
             }),
-          }),
+          })
         );
         expect(result).toBeInstanceOf(Response);
       });
@@ -437,7 +442,7 @@ describe('ResultController', () => {
             props: expect.objectContaining({
               children: expect.stringContaining('data=undefined'),
             }),
-          }),
+          })
         );
         expect(result).toBeInstanceOf(Response);
       });
@@ -466,7 +471,7 @@ describe('ResultController', () => {
           mockConfig,
           expect.objectContaining({
             message: expect.stringContaining('Wallet returned error'),
-          }),
+          })
         );
         expect(result).toBeInstanceOf(Response);
 
@@ -494,7 +499,7 @@ describe('ResultController', () => {
         expect(handleErrorSpy).toHaveBeenCalledWith(
           mockContext,
           mockConfig,
-          expect.any(Error),
+          expect.any(Error)
         );
 
         handleErrorSpy.mockRestore();
@@ -507,7 +512,7 @@ describe('ResultController', () => {
         const controllerWithNullView = new ResultController(
           mockGetDI,
           nullView,
-          mockErrorView,
+          mockErrorView
         );
 
         const mockServiceResult = {
@@ -529,7 +534,7 @@ describe('ResultController', () => {
         expect(handleErrorSpy).toHaveBeenCalledWith(
           mockContext,
           mockConfig,
-          expect.any(Error),
+          expect.any(Error)
         );
         expect(result).toBeInstanceOf(Response);
 
@@ -541,7 +546,7 @@ describe('ResultController', () => {
         const controllerWithUndefinedView = new ResultController(
           mockGetDI,
           undefinedView,
-          mockErrorView,
+          mockErrorView
         );
 
         const mockServiceResult = {
@@ -563,7 +568,7 @@ describe('ResultController', () => {
         expect(handleErrorSpy).toHaveBeenCalledWith(
           mockContext,
           mockConfig,
-          expect.any(Error),
+          expect.any(Error)
         );
         expect(result).toBeInstanceOf(Response);
 
@@ -589,7 +594,7 @@ describe('ResultController', () => {
         expect(handleErrorSpy).toHaveBeenCalledWith(
           mockContext,
           mockConfig,
-          serviceError,
+          serviceError
         );
         expect(result).toBeInstanceOf(Response);
 
@@ -613,7 +618,7 @@ describe('ResultController', () => {
         expect(handleErrorSpy).toHaveBeenCalledWith(
           mockContext,
           mockConfig,
-          asyncError,
+          asyncError
         );
 
         handleErrorSpy.mockRestore();
@@ -628,13 +633,13 @@ describe('ResultController', () => {
         const controllerWithFailingDI = new ResultController(
           failingGetDI,
           mockResultView,
-          mockErrorView,
+          mockErrorView
         );
 
         const handler = controllerWithFailingDI.handler();
 
         await expect(handler(mockContext)).rejects.toThrow(
-          'Dependency injection failed',
+          'Dependency injection failed'
         );
       });
     });
@@ -665,7 +670,7 @@ describe('ResultController', () => {
 
         // Verify service was called with response code
         expect(mockPortsIn.getWalletResponse()).toHaveBeenCalledWith(
-          'complete_test',
+          'complete_test'
         );
 
         // Verify view was rendered with correct props
@@ -698,16 +703,16 @@ describe('ResultController', () => {
           await handler(mockContext);
 
           expect(mockPortsIn.getWalletResponse()).toHaveBeenCalledWith(
-            responseCode,
+            responseCode
           );
           expect(mockContext.render).toHaveBeenCalledWith(
             expect.objectContaining({
               props: expect.objectContaining({
                 children: expect.stringContaining(
-                  `vpToken=token_for_${responseCode}`,
+                  `vpToken=token_for_${responseCode}`
                 ),
               }),
-            }),
+            })
           );
         }
       });
@@ -731,7 +736,7 @@ describe('ResultController', () => {
             props: expect.objectContaining({
               children: expect.stringContaining('vpToken=undefined'),
             }),
-          }),
+          })
         );
         expect(result).toBeInstanceOf(Response);
       });
@@ -776,10 +781,10 @@ describe('ResultController', () => {
           expect.objectContaining({
             props: expect.objectContaining({
               children: expect.stringContaining(
-                `data=${JSON.stringify(largeDocuments)}`,
+                `data=${JSON.stringify(largeDocuments)}`
               ),
             }),
-          }),
+          })
         );
         expect(result).toBeInstanceOf(Response);
       });

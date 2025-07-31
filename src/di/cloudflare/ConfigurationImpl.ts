@@ -1,10 +1,6 @@
 import { Context } from 'hono';
 import { CloudflareEnv } from '../../env';
-import { AbstractConfiguration } from 'oid4vc-verifier-frontend-core';
-import {
-  LoggerConfig,
-  DEVELOPMENT_LOGGER_CONFIG,
-} from 'oid4vc-verifier-frontend-core';
+import { AbstractConfiguration } from '@vecrea/oid4vc-verifier-frontend-core';
 
 export class ConfigurationImpl extends AbstractConfiguration {
   readonly #ctx?: Context<CloudflareEnv>;
@@ -36,9 +32,5 @@ export class ConfigurationImpl extends AbstractConfiguration {
 
   walletResponseRedirectPath(): string {
     return this.#ctx?.env.GET_WALLET_RESPONSE_PATH ?? '';
-  }
-
-  loggerConfig(): LoggerConfig {
-    return DEVELOPMENT_LOGGER_CONFIG;
   }
 }

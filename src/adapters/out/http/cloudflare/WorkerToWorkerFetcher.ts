@@ -9,7 +9,7 @@ import type {
   HttpRequestOptions,
   HttpResponse,
   HttpResponseMetadata,
-} from 'oid4vc-verifier-frontend-core';
+} from '@vecrea/oid4vc-verifier-frontend-core';
 
 /**
  * Custom error class for HTTP-related errors
@@ -32,7 +32,7 @@ export class WorkerToWorkerFetcherError extends Error implements HttpError {
     public readonly statusText?: string,
     public readonly headers?: HttpHeaders,
     public readonly responseBody?: string,
-    public readonly originalError?: Error,
+    public readonly originalError?: Error
   ) {
     super(message);
     this.name = 'WorkerToWorkerFetcherError';
@@ -124,7 +124,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
    * @internal
    */
   private mergeOptions(
-    options?: HttpRequestOptions,
+    options?: HttpRequestOptions
   ): Required<Omit<HttpRequestOptions, 'signal' | 'fetchOptions'>> &
     Pick<HttpRequestOptions, 'signal' | 'fetchOptions'> {
     return {
@@ -151,7 +151,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
   private async performRequest(
     url: string,
     init: RequestInit,
-    timeout?: number,
+    timeout?: number
   ): Promise<Response> {
     const controller = this.createAbortController(timeout);
 
@@ -173,7 +173,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
             undefined,
             undefined,
             undefined,
-            error,
+            error
           );
         }
 
@@ -185,7 +185,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
           undefined,
           undefined,
           undefined,
-          error,
+          error
         );
       }
 
@@ -197,7 +197,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
         undefined,
         undefined,
         undefined,
-        error instanceof Error ? error : new Error(String(error)),
+        error instanceof Error ? error : new Error(String(error))
       );
     }
   }
@@ -215,7 +215,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
   private async processResponse<T>(
     response: Response,
     schema: ZodSchema<T>,
-    url: string,
+    url: string
   ): Promise<HttpResponse<T>> {
     // Check if response is ok
     if (!response.ok) {
@@ -234,7 +234,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
         response.status,
         response.statusText,
         Object.fromEntries(response.headers.entries()),
-        errorData,
+        errorData
       );
     }
 
@@ -252,7 +252,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
         response.statusText,
         Object.fromEntries(response.headers.entries()),
         undefined,
-        error instanceof Error ? error : new Error(String(error)),
+        error instanceof Error ? error : new Error(String(error))
       );
     }
 
@@ -282,7 +282,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
           response.statusText,
           Object.fromEntries(response.headers.entries()),
           JSON.stringify(responseData),
-          error,
+          error
         );
       }
 
@@ -294,7 +294,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
         response.statusText,
         Object.fromEntries(response.headers.entries()),
         JSON.stringify(responseData),
-        error instanceof Error ? error : new Error(String(error)),
+        error instanceof Error ? error : new Error(String(error))
       );
     }
   }
@@ -327,11 +327,11 @@ export class WorkerToWorkerFetcher implements Fetcher {
     path: string,
     query: Record<string, string>,
     schema: ZodSchema<T>,
-    options?: HttpRequestOptions,
+    options?: HttpRequestOptions
   ): Promise<HttpResponse<T>> => {
     const mergedOptions = this.mergeOptions(options);
     const fullUrl = `${baseUrl}${path}?${new URLSearchParams(
-      query,
+      query
     ).toString()}`;
 
     const response = await this.performRequest(
@@ -342,7 +342,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
         signal: mergedOptions.signal,
         ...mergedOptions.fetchOptions,
       },
-      mergedOptions.timeout,
+      mergedOptions.timeout
     );
 
     return this.processResponse(response, schema, fullUrl);
@@ -382,7 +382,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
     path: string,
     body: HttpRequestBody,
     schema: ZodSchema<T>,
-    options?: HttpRequestOptions,
+    options?: HttpRequestOptions
   ): Promise<HttpResponse<T>> => {
     const mergedOptions = this.mergeOptions(options);
     const fullUrl = `${baseUrl}${path}`;
@@ -425,7 +425,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
         signal: mergedOptions.signal,
         ...mergedOptions.fetchOptions,
       },
-      mergedOptions.timeout,
+      mergedOptions.timeout
     );
 
     return this.processResponse(response, schema, fullUrl);
@@ -450,7 +450,7 @@ export class WorkerToWorkerFetcher implements Fetcher {
  * @public
  */
 export function createWorkerToWorkerFetcher(
-  service: Service,
+  service: Service
 ): WorkerToWorkerFetcher {
   return new WorkerToWorkerFetcher(service);
 }

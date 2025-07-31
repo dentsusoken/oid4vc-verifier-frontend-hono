@@ -3,7 +3,7 @@ import {
   SessionSchemas,
   SessionBatch,
   SessionDeleteResult,
-} from 'oid4vc-verifier-frontend-core';
+} from '@vecrea/oid4vc-verifier-frontend-core';
 
 export class SessionKV implements Session<SessionSchemas> {
   readonly #kv: KVNamespace;
@@ -22,7 +22,7 @@ export class SessionKV implements Session<SessionSchemas> {
    * Retrieves a value from the session storage
    */
   async get<K extends keyof SessionSchemas>(
-    key: K,
+    key: K
   ): Promise<SessionSchemas[K] | undefined> {
     await this.load();
     return this.#loaded?.[key];
@@ -51,7 +51,7 @@ export class SessionKV implements Session<SessionSchemas> {
    */
   async set<K extends keyof SessionSchemas>(
     key: K,
-    value: SessionSchemas[K],
+    value: SessionSchemas[K]
   ): Promise<void> {
     await this.load();
 
@@ -67,7 +67,7 @@ export class SessionKV implements Session<SessionSchemas> {
    * Stores multiple key-value pairs in the session storage in a single operation
    */
   async setBatch<K extends keyof SessionSchemas>(
-    batch: Partial<SessionBatch<SessionSchemas, K>>,
+    batch: Partial<SessionBatch<SessionSchemas, K>>
   ): Promise<void> {
     await this.load();
 
@@ -88,7 +88,7 @@ export class SessionKV implements Session<SessionSchemas> {
    * Removes a value from the session storage
    */
   async delete<K extends keyof SessionSchemas>(
-    key: K,
+    key: K
   ): Promise<SessionSchemas[K] | undefined> {
     await this.load();
 

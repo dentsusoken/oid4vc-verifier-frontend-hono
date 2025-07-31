@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PortsOutImpl } from '../PortsOutImpl';
 import { Context } from 'hono';
 import { AwsEnv } from '../../../env';
-import { AbstractPortsOut } from 'oid4vc-verifier-frontend-core';
+import { AbstractPortsOut } from '@vecrea/oid4vc-verifier-frontend-core';
 
 // Mock dependencies
 vi.mock('../../adapters/out/prex', () => ({

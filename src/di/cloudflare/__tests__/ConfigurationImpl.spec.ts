@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ConfigurationImpl } from '../ConfigurationImpl';
 import { Context } from 'hono';
 import { CloudflareEnv } from '../../../env';
-import { DEVELOPMENT_LOGGER_CONFIG } from 'oid4vc-verifier-frontend-core';
 
 describe('ConfigurationImpl', () => {
   let mockContext: Partial<Context<CloudflareEnv>>;
@@ -111,13 +110,6 @@ describe('ConfigurationImpl', () => {
       const configWithoutContext = new ConfigurationImpl();
       const result = configWithoutContext.walletResponseRedirectPath();
       expect(result).toBe('');
-    });
-  });
-
-  describe('loggerConfig', () => {
-    it('should return development logger config', () => {
-      const result = config.loggerConfig();
-      expect(result).toBe(DEVELOPMENT_LOGGER_CONFIG);
     });
   });
 });

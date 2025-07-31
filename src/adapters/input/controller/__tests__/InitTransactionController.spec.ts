@@ -2,7 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Context } from 'hono';
 import { FC } from 'hono/jsx';
 import { InitTransactionController } from '../InitTransactionController';
-import { Configuration, PortsInput } from 'oid4vc-verifier-frontend-core';
+import {
+  Configuration,
+  PortsInput,
+} from '@vecrea/oid4vc-verifier-frontend-core';
 import { InitProps, ErrorPageProps } from '../../views';
 import { Env } from '../../../../env';
 import { GetDI } from '../../../../di';
@@ -151,7 +154,7 @@ const mockErrorView: FC<ErrorPageProps> = ({ error, homePath }) => {
  */
 const createMockGetDI = (
   config: MockConfiguration,
-  portsIn: MockPortsInput,
+  portsIn: MockPortsInput
 ): GetDI<Env> => {
   return vi.fn().mockReturnValue({
     config,
@@ -197,7 +200,7 @@ describe('InitTransactionController', () => {
     it('should create instance with valid parameters', () => {
       expect(
         () =>
-          new InitTransactionController(mockGetDI, mockInitView, mockErrorView),
+          new InitTransactionController(mockGetDI, mockInitView, mockErrorView)
       ).not.toThrow();
     });
 
@@ -207,16 +210,16 @@ describe('InitTransactionController', () => {
           new InitTransactionController(
             null as any,
             mockInitView,
-            mockErrorView,
-          ),
+            mockErrorView
+          )
       ).toThrow(TypeError);
       expect(
         () =>
           new InitTransactionController(
             null as any,
             mockInitView,
-            mockErrorView,
-          ),
+            mockErrorView
+          )
       ).toThrow('getDI must be a function');
     });
 
@@ -226,16 +229,16 @@ describe('InitTransactionController', () => {
           new InitTransactionController(
             undefined as any,
             mockInitView,
-            mockErrorView,
-          ),
+            mockErrorView
+          )
       ).toThrow(TypeError);
       expect(
         () =>
           new InitTransactionController(
             undefined as any,
             mockInitView,
-            mockErrorView,
-          ),
+            mockErrorView
+          )
       ).toThrow('getDI must be a function');
     });
 
@@ -245,27 +248,27 @@ describe('InitTransactionController', () => {
           new InitTransactionController(
             'not-a-function' as any,
             mockInitView,
-            mockErrorView,
-          ),
+            mockErrorView
+          )
       ).toThrow(TypeError);
       expect(
         () =>
           new InitTransactionController(
             'not-a-function' as any,
             mockInitView,
-            mockErrorView,
-          ),
+            mockErrorView
+          )
       ).toThrow('getDI must be a function');
     });
 
     it('should throw TypeError when View is null', () => {
       expect(
         () =>
-          new InitTransactionController(mockGetDI, null as any, mockErrorView),
+          new InitTransactionController(mockGetDI, null as any, mockErrorView)
       ).toThrow(TypeError);
       expect(
         () =>
-          new InitTransactionController(mockGetDI, null as any, mockErrorView),
+          new InitTransactionController(mockGetDI, null as any, mockErrorView)
       ).toThrow('View must be a React functional component');
     });
 
@@ -275,16 +278,16 @@ describe('InitTransactionController', () => {
           new InitTransactionController(
             mockGetDI,
             undefined as any,
-            mockErrorView,
-          ),
+            mockErrorView
+          )
       ).toThrow(TypeError);
       expect(
         () =>
           new InitTransactionController(
             mockGetDI,
             undefined as any,
-            mockErrorView,
-          ),
+            mockErrorView
+          )
       ).toThrow('View must be a React functional component');
     });
 
@@ -294,16 +297,16 @@ describe('InitTransactionController', () => {
           new InitTransactionController(
             mockGetDI,
             'not-a-function' as any,
-            mockErrorView,
-          ),
+            mockErrorView
+          )
       ).toThrow(TypeError);
       expect(
         () =>
           new InitTransactionController(
             mockGetDI,
             'not-a-function' as any,
-            mockErrorView,
-          ),
+            mockErrorView
+          )
       ).toThrow('View must be a React functional component');
     });
 
@@ -311,7 +314,7 @@ describe('InitTransactionController', () => {
       controller = new InitTransactionController(
         mockGetDI,
         mockInitView,
-        mockErrorView,
+        mockErrorView
       );
       expect(controller).toBeInstanceOf(InitTransactionController);
       // Note: We can't directly test inheritance chain, but the constructor should complete successfully
@@ -323,7 +326,7 @@ describe('InitTransactionController', () => {
       controller = new InitTransactionController(
         mockGetDI,
         mockInitView,
-        mockErrorView,
+        mockErrorView
       );
     });
 
@@ -341,23 +344,23 @@ describe('InitTransactionController', () => {
 
         expect(mockGetDI).toHaveBeenCalledWith(mockContext);
         expect(mockPortsIn.initTransaction()).toHaveBeenCalledWith(
-          mockContext.req.raw,
+          mockContext.req.raw
         );
         expect(mockContext.render).toHaveBeenCalledWith(
           expect.objectContaining({
             props: expect.objectContaining({
               children: expect.stringContaining(
-                'redirectUrl=wallet://test-redirect-uri',
+                'redirectUrl=wallet://test-redirect-uri'
               ),
             }),
-          }),
+          })
         );
         expect(mockContext.render).toHaveBeenCalledWith(
           expect.objectContaining({
             props: expect.objectContaining({
               children: expect.stringContaining('isMobile=true'),
             }),
-          }),
+          })
         );
         expect(result).toBeInstanceOf(Response);
       });
@@ -378,7 +381,7 @@ describe('InitTransactionController', () => {
             props: expect.objectContaining({
               children: expect.stringContaining('isMobile=false'),
             }),
-          }),
+          })
         );
         expect(result).toBeInstanceOf(Response);
       });
@@ -398,24 +401,24 @@ describe('InitTransactionController', () => {
           expect.objectContaining({
             props: expect.objectContaining({
               children: expect.stringContaining(
-                'redirectUrl=wallet://custom-uri',
+                'redirectUrl=wallet://custom-uri'
               ),
             }),
-          }),
+          })
         );
         expect(mockContext.render).toHaveBeenCalledWith(
           expect.objectContaining({
             props: expect.objectContaining({
               children: expect.stringContaining('homePath=/test-home'),
             }),
-          }),
+          })
         );
         expect(mockContext.render).toHaveBeenCalledWith(
           expect.objectContaining({
             props: expect.objectContaining({
               children: expect.stringContaining('resultPath=/test-result'),
             }),
-          }),
+          })
         );
       });
 
@@ -435,7 +438,7 @@ describe('InitTransactionController', () => {
             props: expect.objectContaining({
               children: expect.stringContaining('isMobile=undefined'),
             }),
-          }),
+          })
         );
         expect(result).toBeInstanceOf(Response);
       });
@@ -447,7 +450,7 @@ describe('InitTransactionController', () => {
         const controllerWithNullView = new InitTransactionController(
           mockGetDI,
           nullView,
-          mockErrorView,
+          mockErrorView
         );
 
         const mockServiceResult = {
@@ -468,7 +471,7 @@ describe('InitTransactionController', () => {
         expect(handleErrorSpy).toHaveBeenCalledWith(
           mockContext,
           mockConfig,
-          expect.any(Error),
+          expect.any(Error)
         );
         expect(result).toBeInstanceOf(Response);
 
@@ -480,7 +483,7 @@ describe('InitTransactionController', () => {
         const controllerWithUndefinedView = new InitTransactionController(
           mockGetDI,
           undefinedView,
-          mockErrorView,
+          mockErrorView
         );
 
         const mockServiceResult = {
@@ -501,7 +504,7 @@ describe('InitTransactionController', () => {
         expect(handleErrorSpy).toHaveBeenCalledWith(
           mockContext,
           mockConfig,
-          expect.any(Error),
+          expect.any(Error)
         );
         expect(result).toBeInstanceOf(Response);
 
@@ -527,7 +530,7 @@ describe('InitTransactionController', () => {
         expect(handleErrorSpy).toHaveBeenCalledWith(
           mockContext,
           mockConfig,
-          serviceError,
+          serviceError
         );
         expect(result).toBeInstanceOf(Response);
 
@@ -551,7 +554,7 @@ describe('InitTransactionController', () => {
         expect(handleErrorSpy).toHaveBeenCalledWith(
           mockContext,
           mockConfig,
-          asyncError,
+          asyncError
         );
 
         handleErrorSpy.mockRestore();
@@ -566,13 +569,13 @@ describe('InitTransactionController', () => {
         const controllerWithFailingDI = new InitTransactionController(
           failingGetDI,
           mockInitView,
-          mockErrorView,
+          mockErrorView
         );
 
         const handler = controllerWithFailingDI.handler();
 
         await expect(handler(mockContext)).rejects.toThrow(
-          'Dependency injection failed',
+          'Dependency injection failed'
         );
       });
     });
@@ -594,7 +597,7 @@ describe('InitTransactionController', () => {
 
         // Verify service was called with request
         expect(mockPortsIn.initTransaction()).toHaveBeenCalledWith(
-          mockContext.req.raw,
+          mockContext.req.raw
         );
 
         // Verify view was rendered with correct props
@@ -627,7 +630,7 @@ describe('InitTransactionController', () => {
               props: expect.objectContaining({
                 children: expect.stringContaining(`redirectUrl=${redirectUri}`),
               }),
-            }),
+            })
           );
         }
       });
@@ -650,7 +653,7 @@ describe('InitTransactionController', () => {
             props: expect.objectContaining({
               children: expect.stringContaining('redirectUrl='),
             }),
-          }),
+          })
         );
         expect(result).toBeInstanceOf(Response);
       });
@@ -671,7 +674,7 @@ describe('InitTransactionController', () => {
             props: expect.objectContaining({
               children: expect.stringContaining('isMobile=undefined'),
             }),
-          }),
+          })
         );
         expect(result).toBeInstanceOf(Response);
       });

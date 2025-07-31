@@ -1,5 +1,5 @@
 import { LambdaEvent, LambdaContext } from 'hono/aws-lambda';
-import { Session, SessionSchemas } from 'oid4vc-verifier-frontend-core';
+import { Session, SessionSchemas } from '@vecrea/oid4vc-verifier-frontend-core';
 
 export type BaseBindings = {
   API_BASE_URL: string;

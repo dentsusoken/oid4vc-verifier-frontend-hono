@@ -3,7 +3,7 @@ import { SessionDynamoDB, createDynamoDBClient } from '../SessionDynamoDB';
 import { DynamoDB } from '@vecrea/oid4vc-core';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { Nonce, PresentationId } from 'oid4vc-verifier-frontend-core';
+import { Nonce, PresentationId } from '@vecrea/oid4vc-verifier-frontend-core';
 
 // Mock AWS SDK
 vi.mock('@aws-sdk/client-dynamodb', () => ({
@@ -47,7 +47,7 @@ describe('SessionDynamoDB', () => {
     it('should store sessionId and ttl internally', () => {
       // Test by checking behavior rather than private properties
       expect(
-        () => new SessionDynamoDB(mockDynamoDB, sessionId, ttl),
+        () => new SessionDynamoDB(mockDynamoDB, sessionId, ttl)
       ).not.toThrow();
     });
   });
@@ -100,7 +100,7 @@ describe('SessionDynamoDB', () => {
 
       const result = await sessionDynamoDB.getBatch(
         'nonce',
-        'presentationId' as any,
+        'presentationId' as any
       );
 
       expect(result).toEqual({});
@@ -117,7 +117,7 @@ describe('SessionDynamoDB', () => {
       const result = await sessionDynamoDB.getBatch(
         'nonce',
         'presentationId' as any,
-        'nonExistent' as any,
+        'nonExistent' as any
       );
 
       expect(result).toEqual({
@@ -143,7 +143,7 @@ describe('SessionDynamoDB', () => {
       expect(mockDynamoDB.put).toHaveBeenCalledWith(
         sessionId,
         JSON.stringify({ nonce: 'new-nonce-123' }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
 
@@ -157,7 +157,7 @@ describe('SessionDynamoDB', () => {
       expect(mockDynamoDB.put).toHaveBeenCalledWith(
         sessionId,
         JSON.stringify({ nonce: 'new-nonce-123' }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
 
@@ -174,7 +174,7 @@ describe('SessionDynamoDB', () => {
           nonce: 'existing-nonce',
           presentationId: 'new-presentation-id',
         }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
   });
@@ -194,7 +194,7 @@ describe('SessionDynamoDB', () => {
       expect(mockDynamoDB.put).toHaveBeenCalledWith(
         sessionId,
         JSON.stringify(batchData),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
 
@@ -213,7 +213,7 @@ describe('SessionDynamoDB', () => {
           nonce: 'existing-nonce',
           presentationId: 'new-presentation-id',
         }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
 
@@ -229,7 +229,7 @@ describe('SessionDynamoDB', () => {
       expect(mockDynamoDB.put).toHaveBeenCalledWith(
         sessionId,
         JSON.stringify({ nonce: 'defined-nonce' }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
   });
@@ -257,7 +257,7 @@ describe('SessionDynamoDB', () => {
       expect(mockDynamoDB.put).toHaveBeenCalledWith(
         sessionId,
         JSON.stringify({ presentationId: 'test-presentation-id' }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
 
@@ -277,7 +277,7 @@ describe('SessionDynamoDB', () => {
 
       const result = await sessionDynamoDB.deleteBatch(
         'nonce',
-        'presentationId' as any,
+        'presentationId' as any
       );
 
       expect(result).toEqual({});
@@ -294,7 +294,7 @@ describe('SessionDynamoDB', () => {
 
       const result = await sessionDynamoDB.deleteBatch(
         'nonce',
-        'presentationId' as any,
+        'presentationId' as any
       );
 
       expect(result).toEqual({
@@ -304,7 +304,7 @@ describe('SessionDynamoDB', () => {
       expect(mockDynamoDB.put).toHaveBeenCalledWith(
         sessionId,
         JSON.stringify({ keepThis: 'should-remain' }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
 
@@ -315,7 +315,7 @@ describe('SessionDynamoDB', () => {
 
       const result = await sessionDynamoDB.deleteBatch(
         'nonce',
-        'nonExistent' as any,
+        'nonExistent' as any
       );
 
       expect(result).toEqual({ nonce: 'test-nonce' });
@@ -331,7 +331,7 @@ describe('SessionDynamoDB', () => {
       expect(mockDynamoDB.put).toHaveBeenCalledWith(
         sessionId,
         JSON.stringify({}),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
 
@@ -344,7 +344,7 @@ describe('SessionDynamoDB', () => {
       expect(mockDynamoDB.put).toHaveBeenCalledWith(
         sessionId,
         JSON.stringify({}),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
   });
@@ -396,7 +396,7 @@ describe('SessionDynamoDB', () => {
       const result = await sessionDynamoDB.keys();
 
       expect(result).toEqual(
-        expect.arrayContaining(['nonce', 'presentationId']),
+        expect.arrayContaining(['nonce', 'presentationId'])
       );
       expect(result).toHaveLength(2);
     });
@@ -435,7 +435,7 @@ describe('SessionDynamoDB', () => {
       expect(mockDynamoDB.put).toHaveBeenCalledWith(
         sessionId,
         JSON.stringify({ nonce: 'test-nonce' }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
   });
@@ -468,7 +468,7 @@ describe('SessionDynamoDB', () => {
       mockDynamoDB.get.mockRejectedValue(new Error('DynamoDB error'));
 
       await expect(sessionDynamoDB.get('nonce')).rejects.toThrow(
-        'DynamoDB error',
+        'DynamoDB error'
       );
     });
 
@@ -477,7 +477,7 @@ describe('SessionDynamoDB', () => {
       mockDynamoDB.put.mockRejectedValue(new Error('DynamoDB put error'));
 
       await expect(
-        sessionDynamoDB.set('nonce', 'test' as Nonce),
+        sessionDynamoDB.set('nonce', 'test' as Nonce)
       ).rejects.toThrow('DynamoDB put error');
     });
 
@@ -503,7 +503,7 @@ describe('createDynamoDBClient', () => {
 
     vi.mocked(DynamoDBClient).mockReturnValue(mockClient as any);
     vi.mocked(DynamoDBDocumentClient.from).mockReturnValue(
-      mockDocumentClient as any,
+      mockDocumentClient as any
     );
 
     const result = createDynamoDBClient(endpoint, region);
@@ -526,7 +526,7 @@ describe('createDynamoDBClient', () => {
 
     vi.mocked(DynamoDBClient).mockReturnValue(mockClient as any);
     vi.mocked(DynamoDBDocumentClient.from).mockReturnValue(
-      mockDocumentClient as any,
+      mockDocumentClient as any
     );
 
     createDynamoDBClient(endpoint, region, additionalConfig);
@@ -544,7 +544,7 @@ describe('createDynamoDBClient', () => {
 
     vi.mocked(DynamoDBClient).mockReturnValue(mockClient as any);
     vi.mocked(DynamoDBDocumentClient.from).mockReturnValue(
-      mockDocumentClient as any,
+      mockDocumentClient as any
     );
 
     createDynamoDBClient(endpoint, region, undefined);

@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ConfigurationImpl } from '../ConfigurationImpl';
-import { DEVELOPMENT_LOGGER_CONFIG } from 'oid4vc-verifier-frontend-core';
 
 // Mock AWS SDK
 vi.mock('aws-sdk/clients/secretsmanager', () => ({
@@ -236,19 +235,6 @@ describe('ConfigurationImpl', () => {
     });
   });
 
-  describe('loggerConfig', () => {
-    it('should return DEVELOPMENT_LOGGER_CONFIG', () => {
-      const result = configurationImpl.loggerConfig();
-      expect(result).toBe(DEVELOPMENT_LOGGER_CONFIG);
-    });
-
-    it('should always return same config regardless of secrets', () => {
-      const config1 = configurationImpl.loggerConfig();
-      const config2 = new ConfigurationImpl().loggerConfig();
-      expect(config1).toBe(config2);
-    });
-  });
-
   describe('dynamoDBClient', () => {
     it('should create and return DynamoDB client', async () => {
       const mockSecrets = {
@@ -287,7 +273,7 @@ describe('ConfigurationImpl', () => {
 
       expect(createDynamoDBClient).toHaveBeenCalledWith(
         'http://localhost:8000',
-        'us-east-1',
+        'us-east-1'
       );
     });
 
@@ -314,7 +300,7 @@ describe('ConfigurationImpl', () => {
 
       expect(createDynamoDBClient).toHaveBeenCalledWith(
         'http://localhost:8000',
-        '',
+        ''
       );
 
       // Restore environment
@@ -331,7 +317,7 @@ describe('ConfigurationImpl', () => {
       });
 
       await expect(configurationImpl.loadSecrets()).rejects.toThrow(
-        'SecretsManager error',
+        'SecretsManager error'
       );
     });
 
@@ -378,7 +364,7 @@ describe('ConfigurationImpl', () => {
       await configurationImpl.loadSecrets();
 
       expect(mockSecretsManagerInstance.getSecretValue).toHaveBeenCalledTimes(
-        2,
+        2
       );
     });
   });

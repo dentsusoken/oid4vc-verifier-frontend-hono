@@ -5,7 +5,7 @@ import type {
   Configuration,
   PortsInput,
   PortsOut,
-} from 'oid4vc-verifier-frontend-core';
+} from '@vecrea/oid4vc-verifier-frontend-core';
 
 // Create mock factory functions
 const createMockConfiguration = (): Configuration => ({
@@ -15,7 +15,6 @@ const createMockConfiguration = (): Configuration => ({
   publicUrl: vi.fn().mockReturnValue('https://verifier.example.com'),
   walletUrl: vi.fn().mockReturnValue('https://wallet.example.com'),
   walletResponseRedirectPath: vi.fn().mockReturnValue('/result'),
-  loggerConfig: vi.fn().mockReturnValue({ level: 'debug' }),
   resultViewPath: vi.fn().mockReturnValue('/result'),
   walletResponseRedirectQueryTemplate: vi.fn().mockReturnValue('{}'),
   tokenType: vi.fn().mockReturnValue('vp_token'),
@@ -37,7 +36,6 @@ const createMockPortsOut = (): PortsOut => ({
   session: vi.fn().mockReturnValue({ set: vi.fn(), get: vi.fn() }),
   generateNonce: vi.fn(),
   fetcher: vi.fn().mockReturnValue({ get: vi.fn(), post: vi.fn() }),
-  logger: vi.fn(),
   isMobile: vi.fn(),
   generateWalletResponseRedirectUriTemplate: vi.fn(),
   generateWalletRedirectUri: vi.fn(),
@@ -63,8 +61,8 @@ vi.mock('../PortsOutImpl', () => ({
   PortsOutImpl: vi.fn(),
 }));
 
-vi.mock('oid4vc-verifier-frontend-core', async () => {
-  const actual = await vi.importActual('oid4vc-verifier-frontend-core');
+vi.mock('@vecrea/oid4vc-verifier-frontend-core', async () => {
+  const actual = await vi.importActual('@vecrea/oid4vc-verifier-frontend-core');
   return {
     ...actual,
     PortsInputImpl: vi.fn(),
@@ -75,7 +73,7 @@ vi.mock('oid4vc-verifier-frontend-core', async () => {
 import { getDI } from '../getDI';
 import { ConfigurationImpl } from '../ConfigurationImpl';
 import { PortsOutImpl } from '../PortsOutImpl';
-import { PortsInputImpl } from 'oid4vc-verifier-frontend-core';
+import { PortsInputImpl } from '@vecrea/oid4vc-verifier-frontend-core';
 
 describe('getDI', () => {
   let mockContext: Context<AwsEnv>;
@@ -154,7 +152,7 @@ describe('getDI', () => {
 
       expect(vi.mocked(PortsOutImpl)).toHaveBeenCalledWith(
         mockContext,
-        mockConfig,
+        mockConfig
       );
       expect(vi.mocked(PortsOutImpl)).toHaveBeenCalledTimes(1);
     });
@@ -164,7 +162,7 @@ describe('getDI', () => {
 
       expect(vi.mocked(PortsInputImpl)).toHaveBeenCalledWith(
         mockConfig,
-        mockPortsOut,
+        mockPortsOut
       );
       expect(vi.mocked(PortsInputImpl)).toHaveBeenCalledTimes(1);
     });
@@ -190,14 +188,14 @@ describe('getDI', () => {
     it('should throw TypeError when context is null', () => {
       expect(() => getDI(null as any)).toThrow(TypeError);
       expect(() => getDI(null as any)).toThrow(
-        'Context parameter is required for dependency injection setup',
+        'Context parameter is required for dependency injection setup'
       );
     });
 
     it('should throw TypeError when context is undefined', () => {
       expect(() => getDI(undefined as any)).toThrow(TypeError);
       expect(() => getDI(undefined as any)).toThrow(
-        'Context parameter is required for dependency injection setup',
+        'Context parameter is required for dependency injection setup'
       );
     });
 
@@ -217,7 +215,7 @@ describe('getDI', () => {
       });
 
       expect(() => getDI(mockContext)).toThrow(
-        'Failed to initialize dependency injection container: Configuration initialization failed',
+        'Failed to initialize dependency injection container: Configuration initialization failed'
       );
     });
 
@@ -227,7 +225,7 @@ describe('getDI', () => {
       });
 
       expect(() => getDI(mockContext)).toThrow(
-        'Failed to initialize dependency injection container: PortsOut initialization failed',
+        'Failed to initialize dependency injection container: PortsOut initialization failed'
       );
     });
 
@@ -237,7 +235,7 @@ describe('getDI', () => {
       });
 
       expect(() => getDI(mockContext)).toThrow(
-        'Failed to initialize dependency injection container: PortsInput initialization failed',
+        'Failed to initialize dependency injection container: PortsInput initialization failed'
       );
     });
 
@@ -247,7 +245,7 @@ describe('getDI', () => {
       });
 
       expect(() => getDI(mockContext)).toThrow(
-        'Failed to initialize dependency injection container: Unknown error',
+        'Failed to initialize dependency injection container: Unknown error'
       );
     });
 
@@ -257,7 +255,7 @@ describe('getDI', () => {
       });
 
       expect(() => getDI(mockContext)).toThrow(
-        /Please check that all required environment variables and bindings are configured/,
+        /Please check that all required environment variables and bindings are configured/
       );
     });
   });
@@ -321,14 +319,13 @@ describe('getDI', () => {
 
       expect(typeof result.config.apiBaseUrl).toBe('function');
       expect(typeof result.config.publicUrl).toBe('function');
-      expect(typeof result.config.loggerConfig).toBe('function');
     });
 
     it('should return functional portsOut object', () => {
       const result = getDI(mockContext);
 
       expect(typeof result.portsOut.generatePresentationDefinition).toBe(
-        'function',
+        'function'
       );
       expect(typeof result.portsOut.mdocVerifier).toBe('function');
       expect(typeof result.portsOut.session).toBe('function');

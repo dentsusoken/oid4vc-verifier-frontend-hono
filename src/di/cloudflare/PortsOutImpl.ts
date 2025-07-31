@@ -2,7 +2,7 @@ import {
   AbstractPortsOut,
   Configuration,
   Fetcher,
-} from 'oid4vc-verifier-frontend-core';
+} from '@vecrea/oid4vc-verifier-frontend-core';
 import { Context } from 'hono';
 import { CloudflareEnv } from '../../env';
 import { mDLPresentationDefinition } from '../../adapters/out/prex';

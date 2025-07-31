@@ -1,7 +1,7 @@
 import { Handler, Context } from 'hono';
 import { Env } from '../../../env';
 import { ContentfulStatusCode } from 'hono/utils/http-status';
-import { Configuration } from 'oid4vc-verifier-frontend-core';
+import { Configuration } from '@vecrea/oid4vc-verifier-frontend-core';
 
 /**
  * Base controller interface for HTTP request handling
@@ -70,6 +70,6 @@ export interface Controller<T extends Env> {
     context: Context<T>,
     config: Configuration,
     error: Error | string,
-    status?: ContentfulStatusCode,
+    status?: ContentfulStatusCode
   ): Promise<Response>;
 }

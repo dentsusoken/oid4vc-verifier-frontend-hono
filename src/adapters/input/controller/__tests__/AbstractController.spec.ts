@@ -3,7 +3,7 @@ import { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { FC } from 'hono/jsx';
 import { AbstractController } from '../AbstractController';
-import { Configuration } from 'oid4vc-verifier-frontend-core';
+import { Configuration } from '@vecrea/oid4vc-verifier-frontend-core';
 import { ErrorPageProps } from '../../views';
 import { Env } from '../../../../env';
 
@@ -172,23 +172,23 @@ describe('AbstractController', () => {
     it('should throw TypeError when errorView is null', () => {
       expect(() => new TestController(null as any)).toThrow(TypeError);
       expect(() => new TestController(null as any)).toThrow(
-        'errorView must be a React functional component',
+        'errorView must be a React functional component'
       );
     });
 
     it('should throw TypeError when errorView is undefined', () => {
       expect(() => new TestController(undefined as any)).toThrow(TypeError);
       expect(() => new TestController(undefined as any)).toThrow(
-        'errorView must be a React functional component',
+        'errorView must be a React functional component'
       );
     });
 
     it('should throw TypeError when errorView is not a function', () => {
       expect(() => new TestController('not-a-function' as any)).toThrow(
-        TypeError,
+        TypeError
       );
       expect(() => new TestController('not-a-function' as any)).toThrow(
-        'errorView must be a React functional component',
+        'errorView must be a React functional component'
       );
     });
   });
@@ -201,7 +201,7 @@ describe('AbstractController', () => {
         const result = await controller.handleError(
           mockContext,
           mockConfig,
-          error,
+          error
         );
 
         expect(mockContext.status).toHaveBeenCalledWith(500);
@@ -215,7 +215,7 @@ describe('AbstractController', () => {
         const result = await controller.handleError(
           mockContext,
           mockConfig,
-          error,
+          error
         );
 
         expect(mockContext.status).toHaveBeenCalledWith(500);
@@ -231,7 +231,7 @@ describe('AbstractController', () => {
           mockContext,
           mockConfig,
           error,
-          customStatus,
+          customStatus
         );
 
         expect(mockContext.status).toHaveBeenCalledWith(customStatus);
@@ -246,7 +246,7 @@ describe('AbstractController', () => {
         const result = await controller.handleError(
           mockContext,
           mockConfig,
-          httpError,
+          httpError
         );
 
         expect(mockContext.status).toHaveBeenCalledWith(404);
@@ -259,7 +259,7 @@ describe('AbstractController', () => {
         const result = await controller.handleError(
           mockContext,
           mockConfig,
-          httpError,
+          httpError
         );
 
         expect(mockContext.status).toHaveBeenCalledWith(403);
@@ -279,7 +279,7 @@ describe('AbstractController', () => {
           await controller.handleError(mockContext, mockConfig, error);
 
           expect(mockContext.status).toHaveBeenCalledWith(expectedStatus);
-        },
+        }
       );
 
       it.each([
@@ -293,7 +293,7 @@ describe('AbstractController', () => {
           await controller.handleError(mockContext, mockConfig, error);
 
           expect(mockContext.status).toHaveBeenCalledWith(expectedStatus);
-        },
+        }
       );
 
       it('should map not found errors to 404 status', async () => {
@@ -319,7 +319,7 @@ describe('AbstractController', () => {
             stack: expect.any(String),
             status: 500,
             timestamp: expect.any(String),
-          }),
+          })
         );
       });
 
@@ -334,7 +334,7 @@ describe('AbstractController', () => {
           expect.objectContaining({
             status: 500,
             timestamp: expect.any(String),
-          }),
+          })
         );
 
         // Ensure sensitive information is not logged
@@ -343,7 +343,7 @@ describe('AbstractController', () => {
           expect.objectContaining({
             message: expect.any(String),
             stack: expect.any(String),
-          }),
+          })
         );
       });
 
@@ -359,7 +359,7 @@ describe('AbstractController', () => {
             props: expect.objectContaining({
               children: expect.stringContaining('Internal Server Error'),
             }),
-          }),
+          })
         );
       });
 
@@ -375,7 +375,7 @@ describe('AbstractController', () => {
             props: expect.objectContaining({
               children: expect.stringContaining('Session expired'),
             }),
-          }),
+          })
         );
       });
     });
@@ -392,14 +392,14 @@ describe('AbstractController', () => {
             props: expect.objectContaining({
               children: expect.stringContaining('Error: Test error'),
             }),
-          }),
+          })
         );
         expect(mockContext.render).toHaveBeenCalledWith(
           expect.objectContaining({
             props: expect.objectContaining({
               children: expect.stringContaining('Home: /test-home'),
             }),
-          }),
+          })
         );
       });
 
@@ -410,7 +410,7 @@ describe('AbstractController', () => {
         const error = new Error('Test error');
 
         await expect(
-          controllerWithNullView.handleError(mockContext, mockConfig, error),
+          controllerWithNullView.handleError(mockContext, mockConfig, error)
         ).rejects.toThrow(HTTPException);
 
         expect(consoleErrorSpy).toHaveBeenNthCalledWith(
@@ -421,7 +421,7 @@ describe('AbstractController', () => {
             homePath: '/test-home',
             statusCode: 500,
             timestamp: expect.any(String),
-          }),
+          })
         );
       });
 
@@ -433,7 +433,7 @@ describe('AbstractController', () => {
         });
 
         await expect(
-          controller.handleError(mockContext, mockConfig, error),
+          controller.handleError(mockContext, mockConfig, error)
         ).rejects.toThrow(HTTPException);
 
         expect(consoleErrorSpy).toHaveBeenNthCalledWith(
@@ -446,7 +446,7 @@ describe('AbstractController', () => {
             path: '/test-path',
             timestamp: expect.any(String),
             stack: expect.any(String),
-          }),
+          })
         );
       });
 
@@ -459,13 +459,13 @@ describe('AbstractController', () => {
         // Test development mode
         process.env.NODE_ENV = 'development';
         await expect(
-          controller.handleError(mockContext, mockConfig, error),
+          controller.handleError(mockContext, mockConfig, error)
         ).rejects.toThrow('Critical error: Critical render error');
 
         // Test production mode
         process.env.NODE_ENV = 'production';
         await expect(
-          controller.handleError(mockContext, mockConfig, error),
+          controller.handleError(mockContext, mockConfig, error)
         ).rejects.toThrow('Critical system error occurred');
       });
     });
@@ -488,7 +488,7 @@ describe('AbstractController', () => {
             props: expect.objectContaining({
               children: expect.stringContaining('Home: /async-home'),
             }),
-          }),
+          })
         );
       });
 
@@ -501,14 +501,14 @@ describe('AbstractController', () => {
         const error = new Error('Original error');
 
         await expect(
-          controller.handleError(mockContext, failingConfig as any, error),
+          controller.handleError(mockContext, failingConfig as any, error)
         ).rejects.toThrow(HTTPException);
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
           'Critical error in AbstractController:',
           expect.objectContaining({
             renderError: 'Config error',
-          }),
+          })
         );
       });
     });
@@ -520,7 +520,7 @@ describe('AbstractController', () => {
         const result = await controller.handleError(
           mockContext,
           mockConfig,
-          error,
+          error
         );
 
         expect(mockContext.status).toHaveBeenCalledWith(500);
@@ -533,7 +533,7 @@ describe('AbstractController', () => {
         const result = await controller.handleError(
           mockContext,
           mockConfig,
-          error,
+          error
         );
 
         expect(mockContext.status).toHaveBeenCalledWith(500);
@@ -546,7 +546,7 @@ describe('AbstractController', () => {
         const result = await controller.handleError(
           mockContext,
           mockConfig,
-          error,
+          error
         );
 
         expect(mockContext.status).toHaveBeenCalledWith(500);

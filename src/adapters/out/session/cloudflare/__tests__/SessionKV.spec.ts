@@ -6,7 +6,7 @@ import {
   nonceSchema,
   PresentationId,
   Nonce,
-} from 'oid4vc-verifier-frontend-core';
+} from '@vecrea/oid4vc-verifier-frontend-core';
 
 // Mock for KVNamespace
 interface MockKVNamespace {
@@ -37,7 +37,7 @@ describe('SessionKV', () => {
   describe('get method', () => {
     it('should return value from session storage', async () => {
       const testPresentationId = presentationIdSchema.parse(
-        'test-presentation-id',
+        'test-presentation-id'
       );
       const testData = { presentationId: testPresentationId };
       mockKv.get.mockResolvedValue(JSON.stringify(testData));
@@ -53,7 +53,7 @@ describe('SessionKV', () => {
       mockKv.get.mockResolvedValue(JSON.stringify(testData));
 
       const result = await sessionKV.get(
-        'presentationId' as keyof SessionSchemas,
+        'presentationId' as keyof SessionSchemas
       );
 
       expect(result).toBeUndefined();
@@ -112,13 +112,13 @@ describe('SessionKV', () => {
 
       await sessionKV.set(
         'presentationId',
-        'new-presentation-id' as PresentationId,
+        'new-presentation-id' as PresentationId
       );
 
       expect(mockKv.put).toHaveBeenCalledWith(
         sessionId,
         JSON.stringify({ presentationId: 'new-presentation-id' }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
 
@@ -128,7 +128,7 @@ describe('SessionKV', () => {
 
       await sessionKV.set(
         'presentationId',
-        'new-presentation-id' as PresentationId,
+        'new-presentation-id' as PresentationId
       );
 
       expect(mockKv.put).toHaveBeenCalledWith(
@@ -137,7 +137,7 @@ describe('SessionKV', () => {
           nonce: 'existing-nonce',
           presentationId: 'new-presentation-id',
         }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
   });
@@ -157,7 +157,7 @@ describe('SessionKV', () => {
           presentationId: 'test-presentation-id',
           nonce: 'test-nonce',
         }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
 
@@ -177,7 +177,7 @@ describe('SessionKV', () => {
           presentationId: 'test-presentation-id',
           nonce: 'test-nonce',
         }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
 
@@ -194,7 +194,7 @@ describe('SessionKV', () => {
         JSON.stringify({
           presentationId: 'test-presentation-id',
         }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
   });
@@ -213,7 +213,7 @@ describe('SessionKV', () => {
       expect(mockKv.put).toHaveBeenCalledWith(
         sessionId,
         JSON.stringify({ nonce: 'test-nonce' }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
 
@@ -222,7 +222,7 @@ describe('SessionKV', () => {
       mockKv.get.mockResolvedValue(JSON.stringify(testData));
 
       const removedValue = await sessionKV.delete(
-        'presentationId' as keyof SessionSchemas,
+        'presentationId' as keyof SessionSchemas
       );
 
       expect(removedValue).toBeUndefined();
@@ -251,7 +251,7 @@ describe('SessionKV', () => {
 
       const deletedValues = await sessionKV.deleteBatch(
         'presentationId',
-        'nonce',
+        'nonce'
       );
 
       expect(deletedValues).toEqual({
@@ -261,7 +261,7 @@ describe('SessionKV', () => {
       expect(mockKv.put).toHaveBeenCalledWith(
         sessionId,
         JSON.stringify({ otherKey: 'other-value' }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
 
@@ -270,7 +270,7 @@ describe('SessionKV', () => {
 
       const deletedValues = await sessionKV.deleteBatch(
         'presentationId',
-        'nonce',
+        'nonce'
       );
 
       expect(deletedValues).toEqual({});
@@ -303,7 +303,7 @@ describe('SessionKV', () => {
       mockKv.get.mockResolvedValue(JSON.stringify(testData));
 
       const hasKey = await sessionKV.has(
-        'presentationId' as keyof SessionSchemas,
+        'presentationId' as keyof SessionSchemas
       );
 
       expect(hasKey).toBe(false);
@@ -389,13 +389,13 @@ describe('SessionKV', () => {
       mockKv.get.mockResolvedValue(null);
       await sessionKV.set(
         'presentationId',
-        'test-presentation-id' as PresentationId,
+        'test-presentation-id' as PresentationId
       );
 
       expect(mockKv.put).toHaveBeenCalledWith(
         sessionId,
         JSON.stringify({ presentationId: 'test-presentation-id' }),
-        { expirationTtl: ttl },
+        { expirationTtl: ttl }
       );
     });
   });

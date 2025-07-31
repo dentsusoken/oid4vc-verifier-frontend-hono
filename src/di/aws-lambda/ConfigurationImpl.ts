@@ -1,11 +1,7 @@
 import { Context } from 'hono';
 import { AwsEnv, AwsSecrets } from '../../env';
-import { AbstractConfiguration } from 'oid4vc-verifier-frontend-core';
+import { AbstractConfiguration } from '@vecrea/oid4vc-verifier-frontend-core';
 import SecretsManager from 'aws-sdk/clients/secretsmanager';
-import {
-  LoggerConfig,
-  DEVELOPMENT_LOGGER_CONFIG,
-} from 'oid4vc-verifier-frontend-core';
 import { createDynamoDBClient } from '../../adapters/out/session/aws';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
@@ -71,17 +67,13 @@ export class ConfigurationImpl extends AbstractConfiguration {
     return this.#secrets?.GET_WALLET_RESPONSE_PATH ?? '';
   }
 
-  loggerConfig(): LoggerConfig {
-    return DEVELOPMENT_LOGGER_CONFIG;
-  }
-
   dynamoDBClient(): DynamoDBDocumentClient {
     if (!this.#secrets) {
       this.loadSecrets();
     }
     return createDynamoDBClient(
       this.#secrets?.DYNAMODB_ENDPOINT ?? '',
-      process.env.AWS_REGION ?? '',
+      process.env.AWS_REGION ?? ''
     );
   }
 

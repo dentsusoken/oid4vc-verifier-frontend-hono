@@ -3,7 +3,7 @@ import {
   SessionSchemas,
   SessionBatch,
   SessionDeleteResult,
-} from 'oid4vc-verifier-frontend-core';
+} from '@vecrea/oid4vc-verifier-frontend-core';
 import { DynamoDB } from '@vecrea/oid4vc-core';
 import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
@@ -11,7 +11,7 @@ import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 export const createDynamoDBClient = (
   endpoint: string,
   region: string,
-  config?: DynamoDBClientConfig,
+  config?: DynamoDBClientConfig
 ) => {
   const client = new DynamoDBClient({
     endpoint,
@@ -38,7 +38,7 @@ export class SessionDynamoDB implements Session<SessionSchemas> {
    * Retrieves a value from the session storage
    */
   async get<K extends keyof SessionSchemas>(
-    key: K,
+    key: K
   ): Promise<SessionSchemas[K] | undefined> {
     await this.load();
     return this.#loaded?.[key];
@@ -67,7 +67,7 @@ export class SessionDynamoDB implements Session<SessionSchemas> {
    */
   async set<K extends keyof SessionSchemas>(
     key: K,
-    value: SessionSchemas[K],
+    value: SessionSchemas[K]
   ): Promise<void> {
     await this.load();
 
@@ -83,7 +83,7 @@ export class SessionDynamoDB implements Session<SessionSchemas> {
    * Stores multiple key-value pairs in the session storage in a single operation
    */
   async setBatch<K extends keyof SessionSchemas>(
-    batch: Partial<SessionBatch<SessionSchemas, K>>,
+    batch: Partial<SessionBatch<SessionSchemas, K>>
   ): Promise<void> {
     await this.load();
 
@@ -104,7 +104,7 @@ export class SessionDynamoDB implements Session<SessionSchemas> {
    * Removes a value from the session storage
    */
   async delete<K extends keyof SessionSchemas>(
-    key: K,
+    key: K
   ): Promise<SessionSchemas[K] | undefined> {
     await this.load();
 
