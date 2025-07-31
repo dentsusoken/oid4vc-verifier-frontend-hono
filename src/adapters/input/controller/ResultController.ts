@@ -78,7 +78,7 @@ export class ResultController<T extends Env> extends AbstractController<T> {
   constructor(
     private readonly getDI: GetDI<T>,
     private readonly View: FC<ResultProps>,
-    errorView: FC<ErrorPageProps>,
+    errorView: FC<ErrorPageProps>
   ) {
     // Initialize parent AbstractController with error view
     super(errorView);
@@ -123,10 +123,8 @@ export class ResultController<T extends Env> extends AbstractController<T> {
       const { config, portsIn } = this.getDI(c);
 
       try {
-        const responseCode = c.req.query('response_code') ?? '';
-
         const service = portsIn.getWalletResponse();
-        const response = await service(responseCode);
+        const response = await service(c.req.raw);
 
         if (!response.valid) {
           throw new Error(`Wallet returned error: ${response}`);
