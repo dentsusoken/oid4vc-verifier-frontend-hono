@@ -4,6 +4,7 @@ import { PortsInputImpl } from '@vecrea/oid4vc-verifier-frontend-core';
 import { PortsOutImpl } from './PortsOutImpl';
 import { CloudflareEnv } from '../../env';
 import { GetDI } from '..';
+import { PRESENTATION_DEFINITIONS } from '../../adapters/out/prex';
 
 /**
  * Dependency injection factory function for Cloudflare Workers environment
@@ -71,10 +72,13 @@ export const getDI: GetDI<CloudflareEnv> = (c: Context<CloudflareEnv>) => {
     const config = new ConfigurationImpl(c);
 
     // Create output ports with proper error handling
-    const portsOut = new PortsOutImpl(c, config);
+    const portsOut = new PortsOutImpl(c);
 
     // Create input ports with dependency injection
-    const portsIn = new PortsInputImpl(config, portsOut);
+    const portsIn = new PortsInputImpl<typeof PRESENTATION_DEFINITIONS>(
+      config,
+      portsOut
+    );
 
     return { config, portsOut, portsIn };
   } catch (error) {

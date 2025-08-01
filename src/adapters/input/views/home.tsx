@@ -52,7 +52,7 @@ export const Home: FC<HomeProps> = ({ initTransactionPath }) => {
   // Validate required props
   if (!initTransactionPath || typeof initTransactionPath !== 'string') {
     console.error(
-      'Home component: initTransactionPath is required and must be a string',
+      'Home component: initTransactionPath is required and must be a string'
     );
     return (
       <Card title="Configuration Error">
@@ -75,6 +75,14 @@ export const Home: FC<HomeProps> = ({ initTransactionPath }) => {
           aria-label="Start mDL verification process"
         >
           mDL Verification
+        </a>
+        <a
+          href={`${initTransactionPath}/unifiedID`}
+          class="block text-center text-lg text-white bg-green-500 hover:bg-green-700 py-2 px-4 rounded mb-4"
+          role="button"
+          aria-label="Start unifiedID verification process"
+        >
+          UnifiedID Verification
         </a>
       </>
     </Card>

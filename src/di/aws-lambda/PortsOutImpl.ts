@@ -4,19 +4,21 @@ import {
 } from '@vecrea/oid4vc-verifier-frontend-core';
 import { Context } from 'hono';
 import { AwsEnv } from '../../env';
-import { mDLPresentationDefinition } from '../../adapters/out/prex';
+import { PRESENTATION_DEFINITIONS } from '../../adapters/out/prex';
 import { mdocVerifier } from '../../adapters/out/mdoc/MdocVerifier';
 
-export class PortsOutImpl extends AbstractPortsOut {
+export class PortsOutImpl extends AbstractPortsOut<
+  typeof PRESENTATION_DEFINITIONS
+> {
   readonly #ctx: Context<AwsEnv>;
 
-  constructor(ctx: Context<AwsEnv>, config: Configuration) {
-    super(config);
+  constructor(ctx: Context<AwsEnv>) {
+    super();
     this.#ctx = ctx;
   }
 
-  generatePresentationDefinition() {
-    return mDLPresentationDefinition;
+  generatePresentationDefinition(key: keyof typeof PRESENTATION_DEFINITIONS) {
+    return PRESENTATION_DEFINITIONS[key];
   }
 
   mdocVerifier() {

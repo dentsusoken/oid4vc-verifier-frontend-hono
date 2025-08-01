@@ -127,7 +127,7 @@ export class FrontendApi<T extends Env> {
     homePath: string,
     initPath: string,
     resultPath: string,
-    getDI: GetDI<T>,
+    getDI: GetDI<T>
   ) {
     // Validate required parameters
     if (!homePath || typeof homePath !== 'string') {
@@ -216,10 +216,11 @@ export class FrontendApi<T extends Env> {
       const app = new Hono<Env>()
         .use(
           '*',
-          jsxRenderer(({ children }) => <Template>{children}</Template>),
+          jsxRenderer(({ children }) => <Template>{children}</Template>)
         )
         .get(this.#homePath, this.homeHandler())
         .get(this.#initPath, this.initHandler())
+        .get(`${this.#initPath}/unifiedID`, this.unifiedIDInitHandler())
         .get(this.#resultPath, this.resultHandler())
         .get('*', this.notFoundHandler());
 
@@ -276,7 +277,7 @@ export class FrontendApi<T extends Env> {
           <ErrorPage
             error="Failed to load home page"
             homePath={this.#homePath}
-          />,
+          />
         );
       }
     };
@@ -312,7 +313,8 @@ export class FrontendApi<T extends Env> {
       const controller = new InitTransactionController(
         this.#getDI,
         Init,
-        ErrorPage,
+        'mDL',
+        ErrorPage
       );
 
       console.log('InitTransactionController created successfully');
@@ -330,7 +332,36 @@ export class FrontendApi<T extends Env> {
           <ErrorPage
             error="Transaction initialization is currently unavailable"
             homePath={this.#homePath}
-          />,
+          />
+        );
+    }
+  }
+
+  unifiedIDInitHandler(): Handler<T> {
+    try {
+      const controller = new InitTransactionController(
+        this.#getDI,
+        Init,
+        'unifiedID',
+        ErrorPage
+      );
+
+      console.log('InitTransactionController created successfully');
+
+      return controller.handler();
+    } catch (error) {
+      console.error('Failed to create InitTransactionController:', {
+        error: error instanceof Error ? error.message : String(error),
+        timestamp: new Date().toISOString(),
+      });
+
+      // Return fallback handler
+      return (c) =>
+        c.render(
+          <ErrorPage
+            error="Transaction initialization is currently unavailable"
+            homePath={this.#homePath}
+          />
         );
     }
   }
@@ -379,7 +410,7 @@ export class FrontendApi<T extends Env> {
           <ErrorPage
             error="Result processing is currently unavailable"
             homePath={this.#homePath}
-          />,
+          />
         );
     }
   }
@@ -414,7 +445,7 @@ export class FrontendApi<T extends Env> {
 
         c.status(404);
         return c.render(
-          <ErrorPage error="Page Not Found" homePath={this.#homePath} />,
+          <ErrorPage error="Page Not Found" homePath={this.#homePath} />
         );
       } catch (error) {
         console.error('NotFound handler error:', {

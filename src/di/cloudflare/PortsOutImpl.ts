@@ -5,20 +5,22 @@ import {
 } from '@vecrea/oid4vc-verifier-frontend-core';
 import { Context } from 'hono';
 import { CloudflareEnv } from '../../env';
-import { mDLPresentationDefinition } from '../../adapters/out/prex';
+import { PRESENTATION_DEFINITIONS } from '../../adapters/out/prex';
 import { mdocVerifier } from '../../adapters/out/mdoc/MdocVerifier';
 import { WorkerToWorkerFetcher } from '../../adapters/out/http/cloudflare';
 
-export class PortsOutImpl extends AbstractPortsOut {
+export class PortsOutImpl extends AbstractPortsOut<
+  typeof PRESENTATION_DEFINITIONS
+> {
   readonly #ctx: Context<CloudflareEnv>;
 
-  constructor(ctx: Context<CloudflareEnv>, config: Configuration) {
-    super(config);
+  constructor(ctx: Context<CloudflareEnv>) {
+    super();
     this.#ctx = ctx;
   }
 
-  generatePresentationDefinition() {
-    return mDLPresentationDefinition;
+  generatePresentationDefinition(key: keyof typeof PRESENTATION_DEFINITIONS) {
+    return PRESENTATION_DEFINITIONS[key];
   }
 
   mdocVerifier() {

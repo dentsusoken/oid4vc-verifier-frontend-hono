@@ -4,9 +4,10 @@ import { AbstractController } from './AbstractController';
 import { GetDI } from '../../../di';
 import { InitProps, ErrorPageProps } from '../views';
 import { FC } from 'hono/jsx';
+import { PRESENTATION_DEFINITIONS } from '../../out/prex';
 
 export class InitTransactionController<
-  T extends Env,
+  T extends Env
 > extends AbstractController<T> {
   /**
    * Creates a new InitTransactionController instance
@@ -22,7 +23,8 @@ export class InitTransactionController<
   constructor(
     private readonly getDI: GetDI<T>,
     private readonly View: FC<InitProps>,
-    errorView: FC<ErrorPageProps>,
+    private readonly key: keyof typeof PRESENTATION_DEFINITIONS,
+    errorView: FC<ErrorPageProps>
   ) {
     // Initialize parent AbstractController with error view
     super(errorView);
@@ -42,7 +44,7 @@ export class InitTransactionController<
 
       try {
         // Get the service instance
-        const service = portsIn.initTransaction();
+        const service = portsIn.initTransaction(this.key);
 
         const { walletRedirectUri, isMobile } = await service(c.req.raw);
 
