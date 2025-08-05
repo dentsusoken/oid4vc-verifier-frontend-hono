@@ -1,54 +1,40 @@
 # Verifier Frontend 構築
 
 - [Verifier Frontend 構築](#verifier-frontend-構築)
-  - [リポジトリの作成](#リポジトリの作成)
-  - [ローカル開発（デザイン等の修正）](#ローカル開発デザイン等の修正)
+  - [リポジトリのフォーク（任意）](#リポジトリのフォーク任意)
+  - [ローカル開発](#ローカル開発)
     - [モジュールのクローン](#モジュールのクローン)
-    - [セットアップ](#セットアップ)
     - [開発](#開発)
     - [デプロイ](#デプロイ)
-    - [シークレットの設定](#シークレットの設定)
+      - [Cloudflare環境](#cloudflare環境)
+    - [環境変数](#環境変数)
+      - [各環境共通](#各環境共通)
+      - [Cloudflare環境](#cloudflare環境-1)
+        - [登録手順](#登録手順)
 
-## リポジトリの作成
+## リポジトリのフォーク（任意）
 
-[こちら](https://github.com/dentsusoken/oid4vc-verifier-frontend-hono)のリポジトリにアクセスし、Fork ボタンを押してリポジトリを作成する。
+このリポジトリのトップページのForkボタンでリポジトリをフォークする。
 
-![Fork1](./images/fork1.png)
-![Fork2](./images/fork2.png)
-
-## ローカル開発（デザイン等の修正）
+## ローカル開発
 
 ### モジュールのクローン
 
 ```bash
-git clone <ForkしたリポジトリのURL>
+git clone https://github.com/dentsusoken/oid4vc-verifier-frontend-hono.git
 ```
 
-### セットアップ
-
-shell/setup_verifier_frontend.[sh|bat] を以下のように クローンしたリポジトリと同じディレクトリに配置する。  
-(Linux、MacOS の場合は setup_verifier_frontend.sh を配置する。Windows の場合は setup_verifier_frontend.bat を配置する。)
-
-```bash
-|- <クローンしたリポジトリ>
-|_ setup_verifier_frontend.sh.[sh|bat]
-```
-
-setup_verifier_frontend.[sh|bat] を実行する。
-
-```bash
-# Linux、MacOS の場合
-sh ./setup_verifier_frontend.sh
-```
-
-```bash
-# Windows の場合
-./setup_verifier_frontend.bat
-```
+（フォークした場合は、URLを変更）
 
 ### 開発
 
-デザインの修正など適宜変更する。
+依存関係をインストール
+
+```bash
+npm install
+```
+
+デザインの修正や対応するVCの追加など適宜変更する。
 
 ローカルサーバーを起動する場合は以下のコマンドを実行する。
 
@@ -56,40 +42,82 @@ sh ./setup_verifier_frontend.sh
 npm run dev
 ```
 
-> [!IMPORTANT]
-> 新たに npm モジュールをインストールする場合は、npm install を実行後、以下のコマンドを実行してリンクを設定し直してください。
-
-```bash
-npm link oid4vc-core oid4vc-prex mdoc-cbor-ts
-```
-
 ### デプロイ
 
-クローンしたリポジトリのルートディレクトリで shell/deploy_verifier_frontend.[sh|bat] を実行する。
-(Linux、MacOS の場合は deploy_verifier_frontend.sh を実行する。Windows の場合は deploy_verifier_frontend.bat を実行する。)
+#### Cloudflare環境
 
-```bash
-# Linux、MacOS の場合
-sh ./shell/deploy_verifier_frontend.sh
-```
+1. Cloudflareへのログイン
 
-```bash
-# Windows の場合
-./shell/deploy_verifier_frontend.bat
-```
+  以下のコマンドでCloudflareにログインする。
 
-### シークレットの設定
+  ```bash
+  npx wrangler login
+  ```
 
-[Cloudflare](https://dash.cloudflare.com/)のダッシュボードにアクセスし、画面左側のメニューから、`Compute` -> `Workers & Pages`を選択。
-デプロイされた Workers をクリックする。
-画面上部のメニューから`Settings`を選択。
+  または、APIトークンを使用可能。(トークンはCloudflareのWebコンソールから発行。)
+  
+  ```bash
+  export CLOUDFLARE_API_TOKEN=<あなたのAPIトークン>
+  ```
 
-`Variables and Secrets`の`Add`をクリックしてシークレットを追加する。
+2. Cloudflare KVを作成
 
-| Type     | Variable name              | Value                                                                                       |
-| -------- | -------------------------- | ------------------------------------------------------------------------------------------- |
-| `Secret` | `PUBLCI_URL`               | Verifier Frontend の URL（例：https://verifier-frontend.example.com）                       |
-| `Secret` | `API_BASE_URL`             | Verifier Endpoint の URL（例：https://verifier-endpoint.example.com）                       |
-| `Secret` | `INIT_TRANSACTION_PATH`    | Verifier Endpoint の API のパス（例：/api/init-transaction）                                |
-| `Secret` | `GET_WALLET_RESPONSE_PATH` | Verifier Endpoint の API のパス（例：/api/wallet-response）                                 |
-| `Secret` | `WALLET_URL`               | Wallet アプリにリダイレクトするためのディープリンクの URL（例：https://wallet.example.com） |
+  以下のコマンドでKVを作成する。
+
+  ```bash
+  npx wrangler kv namespace create "PRESENTATION_ID_KV"
+  ```
+
+> [!IMPORTANT]
+> コマンド実行後に表示されるIDは次の手順で使用。
+
+3. wrangler.tomlを編集
+
+  wrangler.tomlに作成したKVの情報を記載する。
+  その他の項目についても必要があれば適宜変更。
+
+  ```toml
+  [[kv_namespaces]]
+  binding = "PRESENTATION_ID_KV"
+  id = "<作成したKVのID>"
+  ```
+
+  Verifier Endpointが同じCloudflare環境にデプロイされている場合は、以下の設定も追記。
+  
+  ```toml
+  [[services]]
+  binding = "BACKEND"
+  service = "<Verifier Endpointのサービス名>" # Verifier Endpointのwrangler.tomlのnameプロパティの値
+  ```
+
+4. デプロイ
+
+  以下のコマンドでアプリケーションのビルド、デプロイを一括で行う。
+
+  ```bash
+  npm run deploy
+  ```
+
+### 環境変数
+
+#### 各環境共通
+
+| 変数名                   | 説明                                             |
+| ------------------------ | ------------------------------------------------ |
+| API_BASE_URL             | Verifier EndpointのURL                           |
+| INIT_TRANSACTION_PATH    | Verifier EndpointのInit transaction APIのパス    |
+| GET_WALLET_RESPONSE_PATH | Verifier EndpointのGet wallet response APIのパス |
+| WALLET_URL               | WalletのURL                                      |
+| PUBLIC_URL               | Verifier Frontend(このアプリケーション)のURL     |
+
+#### Cloudflare環境
+
+特に固有の環境変数はなし。  
+下記手順に従い、共通の環境変数を登録。
+
+##### 登録手順
+
+1. [Cloudflare](https://dash.cloudflare.com/)のWebコンソールにアクセスし、画面左側のメニューから、`Compute` -> `Workers & Pages`を選択。
+2. Verifier Frontendのサービスをクリックする。
+3. 画面上部のメニューから`Settings`を選択。
+4. `Variables and Secrets`の`Add`をクリックしてシークレットを追加する。
