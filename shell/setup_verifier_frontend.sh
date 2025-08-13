@@ -51,12 +51,14 @@ git clone https://github.com/dentsusoken/mdoc-cbor-ts || handle_error "mdoc-cbor
 
 echo "oid4vc-coreをビルドしています..."
 cd $CORE_DIR || handle_error "oid4vc-coreディレクトリへの移動に失敗しました"
+git checkout ed7a39cc8fe30d82a475bcb8c847bd5f953277da
 npm install
 npm run build || handle_error "oid4vc-coreのビルドに失敗しました"
 npm link || handle_error "oid4vc-coreのnpm linkに失敗しました"
 
 echo "oid4vc-prexをビルドしています..."
 cd $PREX_DIR || handle_error "oid4vc-prexディレクトリへの移動に失敗しました"
+git checkout 66ff55ffecd250d3c7e673717875e0ec444f56cf
 npm install
 npm link oid4vc-core || handle_error "oid4vc-coreのリンクに失敗しました"
 npm run build || handle_error "oid4vc-prexのビルドに失敗しました"
@@ -64,6 +66,7 @@ npm link || handle_error "oid4vc-prexのnpm linkに失敗しました"
 
 echo "mdoc-cbor-tsをビルドしています..."
 cd $CBOR_DIR || handle_error "mdoc-cbor-tsディレクトリへの移動に失敗しました"
+git checkout d6bc31260b3a6ea9b85a950e1e38fa46019c07c0
 npm install
 npm link oid4vc-core oid4vc-prex || handle_error "依存モジュールのリンクに失敗しました"
 npm run build || handle_error "mdoc-cbor-tsのビルドに失敗しました"
