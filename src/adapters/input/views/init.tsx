@@ -113,7 +113,7 @@ export const Init: FC<InitProps> = async ({
   // Generate QR code with error handling
   let qrCodeSvg: string;
   try {
-    qrCodeSvg = await toString(redirectUrl);
+    qrCodeSvg = await toString(redirectUrl, { type: 'svg' });
   } catch (error) {
     console.error('Failed to generate QR code:', error);
     qrCodeSvg = '';

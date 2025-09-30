@@ -143,12 +143,12 @@ export abstract class AbstractController<T extends Env>
 
     try {
       // Get home path (may be async)
-      const homePath = await config.homeViewPath();
+      const homePath = config.homeViewPath();
 
       // Generate error view component
       const ViewComponent = this.errorView({
         error: message,
-        homePath,
+        homePath: `${context.env.PUBLIC_URL}${homePath}`,
       });
 
       if (!ViewComponent) {

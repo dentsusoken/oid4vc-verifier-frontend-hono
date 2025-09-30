@@ -1,5 +1,7 @@
 import { LambdaEvent, LambdaContext } from 'hono/aws-lambda';
 import { Session, SessionSchemas } from '@vecrea/oid4vc-verifier-frontend-core';
+import { Env as DynamoDBEnv } from '@squilla/hono-aws-middlewares/dynamodb';
+import { Env as SecretsManagerEnv } from '@squilla/hono-aws-middlewares/secrets-manager';
 
 export type BaseBindings = {
   API_BASE_URL: string;
@@ -14,10 +16,7 @@ export type CloudflareBindings = BaseBindings & {
   BACKEND: Service;
 };
 
-export type AwsSecrets = BaseBindings & {
-  DYNAMODB_ENDPOINT: string;
-  DYNAMODB_TABLE: string;
-};
+export type AwsSecrets = BaseBindings;
 
 export type AwsBindings = {
   event: LambdaEvent;
@@ -36,8 +35,9 @@ export type CloudflareEnv = {
 };
 
 export type AwsEnv = {
-  Bindings: AwsBindings;
+  Bindings: AwsBindings & AwsSecrets;
   Variables: Variables;
-};
+} & DynamoDBEnv &
+  SecretsManagerEnv;
 
 export type Env = CloudflareEnv | AwsEnv;

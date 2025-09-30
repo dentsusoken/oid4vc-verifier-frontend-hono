@@ -1,6 +1,6 @@
 import {
   AbstractPortsOut,
-  Configuration,
+  GenerateWalletResponseRedirectUriTemplate,
 } from '@vecrea/oid4vc-verifier-frontend-core';
 import { Context } from 'hono';
 import { AwsEnv } from '../../env';
@@ -15,6 +15,14 @@ export class PortsOutImpl extends AbstractPortsOut<
   constructor(ctx: Context<AwsEnv>) {
     super();
     this.#ctx = ctx;
+  }
+
+  generateWalletResponseRedirectUriTemplate(): GenerateWalletResponseRedirectUriTemplate {
+    return (baseUrl, path, placeholder) => {
+      const url = new URL(`${baseUrl}${path}`);
+      url.searchParams.set('response_code', placeholder);
+      return decodeURIComponent(url.toString());
+    };
   }
 
   generatePresentationDefinition(key: keyof typeof PRESENTATION_DEFINITIONS) {

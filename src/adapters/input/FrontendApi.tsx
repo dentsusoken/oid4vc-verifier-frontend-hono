@@ -265,7 +265,7 @@ export class FrontendApi<T extends Env> {
           timestamp: new Date().toISOString(),
         });
 
-        return c.render(<Home initTransactionPath={this.#initPath} />);
+        return c.render(<Home initTransactionPath={`${c.env.PUBLIC_URL}${this.#initPath}`} />);
       } catch (error) {
         console.error('Home handler error:', {
           error: error instanceof Error ? error.message : String(error),

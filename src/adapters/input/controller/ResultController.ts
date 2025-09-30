@@ -78,7 +78,7 @@ export class ResultController<T extends Env> extends AbstractController<T> {
   constructor(
     private readonly getDI: GetDI<T>,
     private readonly View: FC<ResultProps>,
-    errorView: FC<ErrorPageProps>
+    errorView: FC<ErrorPageProps>,
   ) {
     // Initialize parent AbstractController with error view
     super(errorView);
@@ -133,7 +133,7 @@ export class ResultController<T extends Env> extends AbstractController<T> {
         // Generate view component
         const ViewComponent = this.View({
           data: response.documents,
-          homePath: await config.homeViewPath(),
+          homePath: `${c.env.PUBLIC_URL}${config.homeViewPath()}`,
           vpToken: response.vpToken!,
         });
 

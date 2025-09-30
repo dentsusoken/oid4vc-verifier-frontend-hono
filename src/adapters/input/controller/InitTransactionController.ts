@@ -51,8 +51,8 @@ export class InitTransactionController<
         // Generate view component
         const ViewComponent = await this.View({
           redirectUrl: walletRedirectUri,
-          homePath: config.homeViewPath(),
-          resultPath: config.resultViewPath(),
+          homePath: `${c.env.PUBLIC_URL}${config.homeViewPath()}`,
+          resultPath: `${c.env.PUBLIC_URL}${config.resultViewPath()}`,
           isMobile,
         });
 
