@@ -2,17 +2,14 @@
   "name": "oid4vc-verifier-frontend-hono",
   "type": "module",
   "scripts": {
-    "build": "esbuild --bundle --outfile=./dist/index.js --platform=node --target=node20 ./src/aws-lambda.ts",
-    "zip": "zip -j lambda.zip dist/index.js",
     "dev": "wrangler dev src/index.ts",
-    "deploy": "wrangler deploy --minify src/index.ts",
-    "build-container": "sam build --use-container --build-image public.ecr.aws/sam/build-nodejs20.x --debug --skip-pull-image",
-    "start-api": "sam local start-api --host 0.0.0.0 --warm-containers EAGER --debug --container-host host.docker.internal --container-host-interface 0.0.0.0 --docker-network hono-lambda-dynamodb_devcontainer_dev-network",
-    "emulate:lambda": "npm run build && npm run build-container && npm run start-api"
+    "deploy": "wrangler deploy --minify src/index.ts"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.709.0",
-    "@aws-sdk/lib-dynamodb": "^3.709.0",
+    "@aws-sdk/client-dynamodb": "^3.896.0",
+    "@aws-sdk/client-secrets-manager": "^3.896.0",
+    "@aws-sdk/lib-dynamodb": "^3.896.0",
+    "@squilla/hono-aws-middlewares": "^1.1.1",
     "cbor-x": "^1.6.0",
     "hono": "^4.5.5",
     "qrcode": "^1.5.4",
@@ -33,6 +30,8 @@
   },
   "peerDependencies": {
     "@vecrea/oid4vc-core": "^0.1.0",
-    "@vecrea/oid4vc-prex": "^0.1.0"
+    "@vecrea/oid4vc-prex": "^0.1.0",
+    "mdoc-cbor-ts": "dentsusoken/mdoc-cbor-ts#d6bc31260b3a6ea9b85a950e1e38fa46019c07c0",
+    "@vecrea/oid4vc-verifier-frontend-core": "dentsusoken/oid4vc-verifier-frontend-core#f8ef90d5f83d3ae24979bfdab0e235bd99407e76"
   }
 }
