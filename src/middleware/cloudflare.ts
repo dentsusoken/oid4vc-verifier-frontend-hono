@@ -1,5 +1,6 @@
 import { createMiddleware } from 'hono/factory';
-import { SessionKV } from '../adapters/out/session/cloudflare';
+// import { SessionKV } from '../adapters/out/session/cloudflare';
+import { SessionDurableObject } from '../adapters/out/session/cloudflare';
 import { Context } from 'hono';
 import { getCookie, setCookie } from 'hono/cookie';
 import { CloudflareEnv } from '../env';
@@ -17,10 +18,11 @@ export const sessionMiddleware = createMiddleware(
   async (c: Context<CloudflareEnv>, next: () => Promise<void>) => {
     const sessionId =
       getCookie(c, SESSION_COOKIE_NAME) || generateAndSetSessionId(c);
+    const stub = c.env.SESSION.get(c.env.SESSION.idFromName(sessionId));
     c.set(
       'SESSION',
-      new SessionKV(c.env.PRESENTATION_ID_KV, sessionId, EXPIRATION_TTL),
+      new SessionDurableObject(stub, sessionId, EXPIRATION_TTL)
     );
     await next();
-  },
+  }
 );

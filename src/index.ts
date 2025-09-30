@@ -16,4 +16,6 @@ const app = new Hono()
   .get('/', (c) => c.redirect(configuration.homeViewPath()))
   .route('/', api.route);
 
+  
+export { DurableObjectBase } from './adapters/out/session/cloudflare';
 export default app;
