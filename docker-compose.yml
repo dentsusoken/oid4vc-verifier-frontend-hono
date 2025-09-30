@@ -32,7 +32,7 @@ services:
   localstack:
     image: localstack/localstack
     ports:
-      - 14566:4566
+      - 24566:4566
     environment:
       - SERVICES=logs,lambda,apigateway,s3,cloudformation,iam,secretsmanager,dynamodb
       - OUTBOUND_HTTP_PROXY=${HTTP_PROXY}
