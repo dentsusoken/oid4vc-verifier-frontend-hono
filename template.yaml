@@ -118,11 +118,3 @@ Resources:
       DockerTag: !Ref ImageTag
       DockerContext: .
       Dockerfile: Dockerfile
-
-Outputs:
-  APIGatewayId:
-    Description: 'API Gateway ID'
-    Value: !Ref OID4VCVerifierFrontendApi
-  LocalStackApi:
-    Description: 'LocalStack API Gateway frontend URL'
-    Value: !Sub 'http://localhost:14566/restapis/${OID4VCVerifierFrontendApi}/${ApiStageName}/_user_request_/'

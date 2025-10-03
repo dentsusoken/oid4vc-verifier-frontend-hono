@@ -10,9 +10,9 @@ set_aws_prod_credentials() {
     export COMMIT_HASH=$(git rev-parse --short=7 HEAD)
 }
 
-# Cleanup process (delete S3 and SAM stack)
+# Cleanup process (delete SAM stack)
 cleanup() {
-    echo "Cleaning up S3 bucket and SAM stack..."
+    echo "Cleaning up SAM stack..."
     sam delete --no-prompts
 }
 
