@@ -1,16 +1,17 @@
 #!/bin/bash
 
 
-# Cleanup process (delete SAM stack)
+# Cleanup process (delete S3 and SAM stack)
 cleanup() {
-    echo "Cleaning up SAM stack..."
+    echo "Cleaning up S3 bucket and SAM stack..."
+    aws s3 rm s3://issuer-css/ --recursive --quiet
     sam delete --no-prompts
 }
 
 # Build process
 build() {
     echo "Building SAM application..."
-    sam build
+    sam build -t template.local.yaml
 }
 
 # Deploy process
@@ -50,6 +51,7 @@ main() {
         set_localstack_credentials
         exit 1
     }
+    
 }
 
 # Execute script

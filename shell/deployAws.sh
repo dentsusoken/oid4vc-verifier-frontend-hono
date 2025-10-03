@@ -6,24 +6,30 @@ set_aws_prod_credentials() {
     export AWS_SECRET_ACCESS_KEY="$AWS_PROD_SECRET_ACCESS_KEY"
     export AWS_DEFAULT_REGION="$AWS_PROD_REGION"
     export AWS_ENDPOINT_URL=
+    export AWS_ECR_REPOSITORY="$AWS_ECR_REPOSITORY"
+    export COMMIT_HASH=$(git rev-parse --short=7 HEAD)
 }
 
-# Cleanup process (delete SAM stack)
+# Cleanup process (delete S3 and SAM stack)
 cleanup() {
-    echo "Cleaning up SAM stack..."
+    echo "Cleaning up S3 bucket and SAM stack..."
+    aws s3 rm s3://issuer-css/ --recursive --quiet
     sam delete --no-prompts
 }
 
 # Build process
 build() {
     echo "Building SAM application..."
-    sam build
+    sam build --parameter-overrides ImageTag=$COMMIT_HASH
 }
 
 # Deploy process
 deploy() {
     echo "Deploying SAM application..."
-    sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+    sam deploy --no-confirm-changeset \
+     --no-fail-on-empty-changeset \
+     --image-repository $AWS_ECR_REPOSITORY \
+     --parameter-overrides ImageTag=$COMMIT_HASH
 }
 
 # Set Localstack credentials
@@ -32,6 +38,7 @@ set_localstack_credentials() {
     export AWS_SECRET_ACCESS_KEY="$LOCALSTACK_SECRET_ACCESS_KEY"
     export AWS_DEFAULT_REGION="$LOCALSTACK_REGION"
     export AWS_ENDPOINT_URL="$LOCALSTACK_ENDPOINT_URL"
+    export AWS_ECR_REPOSITORY="$LOCALSTACK_ECR_REPOSITORY"
 }
 
 # Main process
@@ -65,3 +72,4 @@ main() {
 
 # Execute script
 main "$@"
+ 

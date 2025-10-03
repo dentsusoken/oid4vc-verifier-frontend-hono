@@ -19,10 +19,6 @@ Parameters:
     Type: String
     Default: oid4vc-verifier-frontend-presentation-table
     Description: 'DynamoDB table name for presentation'
-  ImageTag:
-    Type: String
-    Default: latest
-    Description: 'Image tag'
 
 Resources:
   # Secrets Manager
@@ -69,7 +65,9 @@ Resources:
   OID4VCVerifierFrontendFunction:
     Type: AWS::Serverless::Function
     Properties:
-      PackageType: Image
+      CodeUri: ./
+      Handler: aws-lambda.handler
+      Runtime: nodejs22.x
       Timeout: 600
       Architectures:
         - x86_64
@@ -115,9 +113,13 @@ Resources:
             Method: POST
             RestApiId: !Ref OID4VCVerifierFrontendApi
     Metadata:
-      DockerTag: !Ref ImageTag
-      DockerContext: .
-      Dockerfile: Dockerfile
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: 'es2020'
+        Sourcemap: true
+        EntryPoints:
+          - src/aws-lambda.ts
 
 Outputs:
   APIGatewayId:
