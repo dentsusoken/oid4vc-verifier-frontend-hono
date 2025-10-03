@@ -4,7 +4,6 @@
 # Cleanup process (delete S3 and SAM stack)
 cleanup() {
     echo "Cleaning up S3 bucket and SAM stack..."
-    aws s3 rm s3://issuer-css/ --recursive --quiet
     sam delete --no-prompts
 }
 
