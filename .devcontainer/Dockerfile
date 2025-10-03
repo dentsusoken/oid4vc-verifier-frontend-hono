@@ -23,5 +23,6 @@ RUN npm install -g esbuild
 WORKDIR /app
 
 RUN chown -R node:node /app
+RUN chown -R node:node /var/run/*
 
 USER node

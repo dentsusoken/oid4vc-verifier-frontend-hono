@@ -1,6 +1,6 @@
 services:
   app:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
       args:
@@ -11,12 +11,14 @@ services:
         no_proxy: ${no_proxy}
         NO_PROXY: ${NO_PROXY}
     volumes:
-      - .:/app:cached
+      - ..:/app:cached
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/usr/bin/docker:/usr/bin/docker:ro'
     depends_on:
       - localstack
     command: sleep infinity
     env_file:
-      - .env
+      - ../.env
     environment:
       - AWS_ACCESS_KEY_ID=${LOCALSTACK_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${LOCALSTACK_SECRET_ACCESS_KEY}
@@ -33,16 +35,16 @@ services:
     image: localstack/localstack
     ports:
       - 24566:4566
+      - 24510-24559:4510-4559 # external services port range
     environment:
       - SERVICES=logs,lambda,apigateway,s3,cloudformation,iam,secretsmanager,dynamodb
       - OUTBOUND_HTTP_PROXY=${HTTP_PROXY}
       - OUTBOUND_HTTPS_PROXY=${HTTPS_PROXY}
     volumes:
       - localstack_data:/var/lib/localstack
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - '/var/run/docker.sock:/var/run/docker.sock'
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
-
+      test: ['CMD', 'curl', '-f', 'http://localhost:4566/_localstack/health']
 
 volumes:
-  localstack_data: 
+  localstack_data:
