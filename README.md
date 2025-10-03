@@ -1,191 +1,152 @@
 # OID4VC Verifier Frontend (Hono)
 
-A verifier frontend application for OpenID for Verifiable Credentials (OID4VC).
-Built with the Hono framework and runs on both Cloudflare Workers and AWS Lambda environments.
+A Hono-based implementation of the OID4VC Verifier Frontend.
 
-## Supported Environments
+## Table of Contents
 
-- **Cloudflare Workers**: Cloudflare's edge computing environment
-- **AWS Lambda**: AWS serverless execution environment
+- [Setup](#setup)
+- [Local Development](#local-development)
+- [Deployment](#deployment)
+- [AWS Setup](#aws-setup)
+- [LocalStack Deployment](#localstack-deployment)
+- [AWS Deployment](#aws-deployment)
 
-## Environment Configuration
+## Setup
 
-### Cloudflare Workers Environment
+### Prerequisites
 
-#### Required Environment Variables
-
-Configure the following environment variables in `wrangler.toml` or the Cloudflare dashboard:
-
-| Variable Name              | Description                         | Example                        |
-| -------------------------- | ----------------------------------- | ------------------------------ |
-| `API_BASE_URL`             | Backend API base URL                | `https://api.example.com`      |
-| `INIT_TRANSACTION_PATH`    | Transaction initialization API path | `/api/v1/init-transaction`     |
-| `GET_WALLET_RESPONSE_PATH` | Wallet response retrieval API path  | `/api/v1/wallet-response`      |
-| `WALLET_URL`               | Wallet application URL              | `wallet://example`             |
-| `PUBLIC_URL`               | Frontend public URL                 | `https://verifier.example.com` |
-
-#### Required Bindings
-
-##### KV Namespace
-```toml
-[[kv_namespaces]]
-binding = "PRESENTATION_ID_KV"
-id = "your-kv-namespace-id"
-```
-
-Used for storing presentation IDs and session information.
-
-##### Service Binding (Optional)
-```toml
-[[services]]
-binding = "BACKEND"
-service = "your-backend-service-name"
-```
-
-Configure this to enable Worker-to-Worker communication with the backend service.
-
-#### Deployment
+#### Clone Repository
 
 ```bash
-# Development environment
-npm run dev
+git clone https://github.com/dentsusoken/oid4vc-verifier-frontend-hono
+cd oid4vc-verifier-frontend-hono
+```
 
-# Production environment
+#### Install Dependencies
+
+```bash
+npm install
+```
+
+### Cloudflare Setup
+
+#### Create .dev.vars
+
+Create a `.dev.vars` file in the project root:
+
+```bash
+API_BASE_URL="ENDPOINT_URL"
+INIT_TRANSACTION_PATH="ENDPOINT_INIT_TRANSACTION_PATH"
+GET_WALLET_RESPONSE_PATH="ENDPOINT_GET_WALLET_RESPONSE_PATH"
+WALLET_URL="eudi-openid4vp://verifier-backend.eudiw.dev"
+PUBLIC_URL="http://localhost:8787"
+```
+
+## Local Development
+
+### Run Locally
+
+```bash
+npm run dev
+```
+
+## Deployment
+
+### Deploy to Cloudflare Workers
+
+```bash
 npm run deploy
 ```
 
-### AWS Lambda Environment
+## AWS Setup
 
-#### Required Environment Variables
+This section describes the setup procedure for the oid4vc-verifier-frontend-hono application in an AWS Lambda environment.
 
-Configure the following as Lambda function environment variables:
+### Prerequisites
 
-| Variable Name               | Description                           | Example                                          |
-| --------------------------- | ------------------------------------- | ------------------------------------------------ |
-| `AWS_REGION`                | AWS region                            | `us-east-1`, `ap-northeast-1`                    |
-| `SECRETS_MANAGER_SECRET_ID` | AWS Secrets Manager secret identifier | `verifier-frontend-config`                       |
-| `SECRETS_MANAGER_ENDPOINT`  | Secrets Manager endpoint (optional)   | `https://secretsmanager.us-east-1.amazonaws.com` |
+- Docker installed
+- VSCode Dev Container available
 
-#### AWS Secrets Manager Configuration
+### Setup Steps
 
-Create a secret in AWS Secrets Manager with the following JSON format:
+#### Environment Variables Configuration
 
-```json
-{
-  "API_BASE_URL": "https://api.example.com",
-  "INIT_TRANSACTION_PATH": "/api/v1/init-transaction",
-  "GET_WALLET_RESPONSE_PATH": "/api/v1/wallet-response",
-  "WALLET_URL": "https://wallet.example.com",
-  "PUBLIC_URL": "https://verifier.example.com",
-  "DYNAMODB_ENDPOINT": "https://dynamodb.us-east-1.amazonaws.com",
-  "DYNAMODB_TABLE": "verifier-frontend-sessions"
-}
-```
-
-#### Required AWS Resources
-
-##### DynamoDB Table
-- **Table Name**: Name specified in `DYNAMODB_TABLE`
-- **Purpose**: Session information storage
-- **Partition Key**: Configure according to application requirements
-
-##### IAM Permissions
-The Lambda execution role requires the following permissions:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "secretsmanager:GetSecretValue"
-      ],
-      "Resource": "arn:aws:secretsmanager:region:account:secret:secret-name"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "dynamodb:GetItem",
-        "dynamodb:PutItem",
-        "dynamodb:UpdateItem",
-        "dynamodb:DeleteItem",
-        "dynamodb:Query",
-        "dynamodb:Scan"
-      ],
-      "Resource": "arn:aws:dynamodb:region:account:table/table-name"
-    }
-  ]
-}
-```
-
-#### CDK Deployment
-
-When deploying with AWS CDK:
+Copy the `.env.template` file to create a `.env` file and configure your AWS credentials.
 
 ```bash
-# Install dependencies
-npm install
-
-# CDK bootstrap (first time only)
-npx cdk bootstrap
-
-# Deploy
-npx cdk deploy
+cp .env.template .env
 ```
 
-## Architecture
-
-### Dependency Injection (DI)
-
-The application performs dependency injection according to each environment:
-
-- **Configuration**: Environment variable management
-- **PortsOut**: Access to external resources (session, HTTP communication, etc.)
-- **PortsIn**: Application entry points
-
-### Session Management
-
-- **Cloudflare**: Uses KV Namespace
-- **AWS Lambda**: Uses DynamoDB
-
-### HTTP Communication
-
-- **Cloudflare**: Worker-to-Worker communication via Service Binding (when configured), or standard fetch API
-- **AWS Lambda**: Standard fetch API
-
-## Development
-
-### Local Development
+Set the following information in the `.env` file:
 
 ```bash
-# Install dependencies
-npm install
+# AWS credentials
+AWS_PROD_ACCESS_KEY_ID=YOUR_AWS_ACCESS_KEY_ID
+AWS_PROD_SECRET_ACCESS_KEY=YOUR_AWS_SECRET_ACCESS_KEY
+AWS_PROD_REGION=YOUR_AWS_REGION
+AWS_ECR_REPOSITORY=YOUR_ECR_REPOSITORY
 
-# Development in Cloudflare Workers environment
-npm run dev
-
-# Run tests
-npm run test
-
-# Build
-npm run build
+# LocalStack configuration (for local development)
+LOCALSTACK_ACCESS_KEY_ID=test
+LOCALSTACK_SECRET_ACCESS_KEY=test
+LOCALSTACK_ENDPOINT_URL=http://localstack:4566
+LOCALSTACK_REGION=ap-northeast-1
+LOCALSTACK_ECR_REPOSITORY=
 ```
 
-### Environment Switching
+#### VSCode Dev Container Startup
 
-The application automatically detects the runtime environment and selects the appropriate implementation.
+Start the Dev Container in VSCode:
 
-## Troubleshooting
+1. Open the project in VSCode
+2. Open the command palette (Ctrl+Shift+P)
+3. Select "Dev Containers: Reopen in Container"
+4. Wait for the container to start
 
-### Cloudflare Workers
+## LocalStack Deployment
 
-- Verify that KV Namespace is correctly created
-- Verify that environment variables are configured in `wrangler.toml` or dashboard
-- Verify that Service Binding is correctly configured if required
+When using LocalStack as a local development environment:
 
-### AWS Lambda
+```bash
+# Deploy to LocalStack
+./shell/deployLocalStack.sh
+```
 
-- Verify that Secrets Manager access permissions are configured
-- Verify that DynamoDB table is created with appropriate permissions
-- Verify that Lambda function environment variables are correctly configured
+After deployment, configure appropriate secret information in SecretsManager.
+
+## AWS Deployment
+
+When deploying to AWS production environment:
+
+```bash
+# Deploy to AWS production environment
+./shell/deployAws.sh
+```
+
+For initial deployment or when cleanup is needed:
+
+```bash
+# Deploy with cleanup
+./shell/deployAws.sh --clean
+```
+
+After deployment, configure appropriate secret information in AWS SecretsManager.
+
+### Deploy Script Details
+
+#### deployLocalStack.sh
+
+Script for deploying to LocalStack environment:
+
+- Cleanup of SAM stack
+- Build SAM application
+- Deploy to LocalStack
+
+#### deployAws.sh
+
+Script for deploying to AWS production environment:
+
+- `--clean` option for deployment with cleanup
+- Cleanup of SAM stack
+- Build SAM application
+- Deploy to AWS production environment
