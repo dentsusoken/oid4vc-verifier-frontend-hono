@@ -2,7 +2,7 @@
   "name": "oid4vc-verifier-frontend-hono",
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev src/index.ts",
+    "dev": "NODE_ENV=development wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts",
     "build": "esbuild src/aws-lambda.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js"
   },

@@ -32,9 +32,9 @@ new_sqlite_classes = ["DurableObjectBase"]
 # [dev]
 # ip = "0.0.0.0"
 
-[[services]]
-binding = "BACKEND"
-service = "oid4vc-verifier-endpoint-hono"
+# [[services]]
+# binding = "BACKEND"
+# service = "oid4vc-verifier-endpoint-hono"
 
 [observability]
 enabled = true
