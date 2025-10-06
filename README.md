@@ -1,120 +1,152 @@
-# oid4vc-verifier-frontend-hono
+# OID4VC Verifier Frontend (Hono)
 
-## How to build
+A Hono-based implementation of the OID4VC Verifier Frontend.
 
-### Create .dev.vars
+## Table of Contents
+
+- [Setup](#setup)
+- [Local Development](#local-development)
+- [Deployment](#deployment)
+- [AWS Setup](#aws-setup)
+- [LocalStack Deployment](#localstack-deployment)
+- [AWS Deployment](#aws-deployment)
+
+## Setup
+
+### Prerequisites
+
+#### Clone Repository
 
 ```bash
-API_BASE_URL_VERIFIER_FRONTEND = "http://localhost:4566"
-INIT_TRANSACTION_PATH = "/ui/presentations"
-GET_WALLET_RESPONSE_PATH = "/ui/wallet/response"
-WALLET_URL = "eudi-openid4vp:localhost:4566"
-WALLET_RESPONSE_PATH = "/ui/presentations/:presentationId"
-PUBLIC_URL_VERIFIER_FRONTEND = "http://localhost:8787"
-DEPLOY_ENV = "local"
+git clone https://github.com/dentsusoken/oid4vc-verifier-frontend-hono
+cd oid4vc-verifier-frontend-hono
 ```
 
-### Install dependencies
+#### Install Dependencies
 
+```bash
 npm install
+```
 
-### Run locally
+### Cloudflare Setup
 
+#### Create .dev.vars
+
+Create a `.dev.vars` file in the project root:
+
+```bash
+API_BASE_URL="ENDPOINT_URL"
+INIT_TRANSACTION_PATH="ENDPOINT_INIT_TRANSACTION_PATH"
+GET_WALLET_RESPONSE_PATH="ENDPOINT_GET_WALLET_RESPONSE_PATH"
+WALLET_URL="eudi-openid4vp://verifier-backend.eudiw.dev"
+PUBLIC_URL="http://localhost:8787"
+```
+
+## Local Development
+
+### Run Locally
+
+```bash
 npm run dev
+```
 
-### Deploy
+## Deployment
 
+### Deploy to Cloudflare Workers
+
+```bash
 npm run deploy
+```
 
-## How to emulate AWS Lambda　(localstack)
+## AWS Setup
 
-1. Clone or copy the following repositories into the `./build` directory:
-   - [`oid4vc-core`](https://github.com/dentsusoken/oid4vc-core.git)
-   - [`oid4vc-prex`](https://github.com/dentsusoken/oid4vc-prex.git)
-   - [`mdoc-cbor-ts`](https://github.com/dentsusoken/mdoc-cbor-ts.git)
+This section describes the setup procedure for the oid4vc-verifier-frontend-hono application in an AWS Lambda environment.
 
-   ```bash
-   # If cloning new repositories
-   cd build
-   git clone https://github.com/dentsusoken/oid4vc-core.git
-   git clone https://github.com/dentsusoken/oid4vc-prex.git
-   git clone https://github.com/dentsusoken/mdoc-cbor-ts.git
-   
-   # Or if copying existing local development repositories
-   cp -r /path/to/local/oid4vc-core ./build/
-   cp -r /path/to/local/oid4vc-prex ./build/
-   cp -r /path/to/local/mdoc-cbor-ts ./build/
-   ```
-2. Create .env
-    ```bash
-   API_BASE_URL_VERIFIER_FRONTEND=http://localhost:4566
-   INIT_TRANSACTION_PATH=/ui/presentations
-   GET_WALLET_RESPONSE_PATH=/ui/wallet/response
-   WALLET_URL=eudi-openid4vp://localhost:4566
-   WALLET_RESPONSE_PATH=/ui/presentations/:presentationId
-   PUBLIC_URL_VERIFIER_FRONTEND=http://localhost:8787
-   DEPLOY_ENV=local
-    ```
+### Prerequisites
 
-3. Rebuilding the Image and Starting the Container:
-   ```bash
-   docker-compose up --build
-   ```
+- Docker installed
+- VSCode Dev Container available
 
-## How to deploy AWS Lambda
+### Setup Steps
 
-1. Clone or copy the following repositories into the `./build` directory:
-   - [`oid4vc-core`](https://github.com/dentsusoken/oid4vc-core.git)
-   - [`oid4vc-prex`](https://github.com/dentsusoken/oid4vc-prex.git)
-   - [`mdoc-cbor-ts`](https://github.com/dentsusoken/mdoc-cbor-ts.git)
+#### Environment Variables Configuration
 
-   ```bash
-   # If cloning new repositories
-   cd build
-   git clone https://github.com/dentsusoken/oid4vc-core.git
-   git clone https://github.com/dentsusoken/oid4vc-prex.git
-   git clone https://github.com/dentsusoken/mdoc-cbor-ts.git
-   
-   # Or if copying existing local development repositories
-   cp -r /path/to/local/oid4vc-core ./build/
-   cp -r /path/to/local/oid4vc-prex ./build/
-   cp -r /path/to/local/mdoc-cbor-ts ./build/
-   ```
+Copy the `.env.template` file to create a `.env` file and configure your AWS credentials.
 
-2. IAM Role Configuration:
+```bash
+cp .env.template .env
+```
 
-   **Add to the IAM role you are using**
+Set the following information in the `.env` file:
 
-   * AWSLambdaBasicExecutionRole
-   * AWSLambdaDynamoDBExecutionRole
-   * dynamodb:GetItem
-   * SecretsManagerReadWrite
+```bash
+# AWS credentials
+AWS_PROD_ACCESS_KEY_ID=YOUR_AWS_ACCESS_KEY_ID
+AWS_PROD_SECRET_ACCESS_KEY=YOUR_AWS_SECRET_ACCESS_KEY
+AWS_PROD_REGION=YOUR_AWS_REGION
+AWS_ECR_REPOSITORY=YOUR_ECR_REPOSITORY
 
-3. Set Environment Variables for SecretsManager:
-   ```bash
-   API_BASE_URL_VERIFIER_FRONTEND=http://localhost:4566
-   INIT_TRANSACTION_PATH=/ui/presentations
-   GET_WALLET_RESPONSE_PATH=/ui/wallet/response
-   WALLET_URL=eudi-openid4vp://localhost:4566
-   WALLET_RESPONSE_PATH=/ui/presentations/:presentationId
-   PUBLIC_URL_VERIFIER_FRONTEND=http://localhost:8787
-   DYNAMODB_TABLE_VERIFIER_FRONTEND=PRESENTATION_ID
-   ```
-4. Create .env
-    ```bash
-   DYNAMODB_TABLE_VERIFIER_FRONTEND=PRESENTATION_ID
-   AWS_DEFAULT_REGION=ap-northeast-1
-   LAMBDA_ROLE_NAME=arn:aws:iam::xxx:role/role-name
-   AWS_ACCESS_KEY_ID=YOUR_AWS_ACCESS_KEY_ID
-   AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET_ACCESS_KEY
-   ```
+# LocalStack configuration (for local development)
+LOCALSTACK_ACCESS_KEY_ID=test
+LOCALSTACK_SECRET_ACCESS_KEY=test
+LOCALSTACK_ENDPOINT_URL=http://localstack:4566
+LOCALSTACK_REGION=ap-northeast-1
+LOCALSTACK_ECR_REPOSITORY=
+```
 
-4. Build:
-   ```bash
-   docker build -t verifier-frontend:latest .
-   ```
+#### VSCode Dev Container Startup
 
-5. Run:
-   ```bash
-   docker run --env-file ./.env verifier-frontend:latest
-   ```
+Start the Dev Container in VSCode:
+
+1. Open the project in VSCode
+2. Open the command palette (Ctrl+Shift+P)
+3. Select "Dev Containers: Reopen in Container"
+4. Wait for the container to start
+
+## LocalStack Deployment
+
+When using LocalStack as a local development environment:
+
+```bash
+# Deploy to LocalStack
+./shell/deployLocalStack.sh
+```
+
+After deployment, configure appropriate secret information in SecretsManager.
+
+## AWS Deployment
+
+When deploying to AWS production environment:
+
+```bash
+# Deploy to AWS production environment
+./shell/deployAws.sh
+```
+
+For initial deployment or when cleanup is needed:
+
+```bash
+# Deploy with cleanup
+./shell/deployAws.sh --clean
+```
+
+After deployment, configure appropriate secret information in AWS SecretsManager.
+
+### Deploy Script Details
+
+#### deployLocalStack.sh
+
+Script for deploying to LocalStack environment:
+
+- Cleanup of SAM stack
+- Build SAM application
+- Deploy to LocalStack
+
+#### deployAws.sh
+
+Script for deploying to AWS production environment:
+
+- `--clean` option for deployment with cleanup
+- Cleanup of SAM stack
+- Build SAM application
+- Deploy to AWS production environment

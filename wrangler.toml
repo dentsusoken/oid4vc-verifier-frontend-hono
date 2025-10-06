@@ -5,9 +5,17 @@ compatibility_flags = [ "nodejs_compat" ]
 # [vars]
 # MY_VAR = "my-variable"
 
-[[kv_namespaces]]
-binding = "PRESENTATION_ID_KV"
-id = "c3d306b7436241e590580867d966b4ee"
+# [[kv_namespaces]]
+# binding = "PRESENTATION_ID_KV"
+# id = "c3d306b7436241e590580867d966b4ee"
+
+[[durable_objects.bindings]]
+name = "SESSION"
+class_name = "DurableObjectBase"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["DurableObjectBase"]
 
 # [[r2_buckets]]
 # binding = "MY_BUCKET"
@@ -24,6 +32,9 @@ id = "c3d306b7436241e590580867d966b4ee"
 # [dev]
 # ip = "0.0.0.0"
 
-[[services]]
-binding = "BACKEND"
-service = "oid4vc-verifier-endpoint-hono"
+# [[services]]
+# binding = "BACKEND"
+# service = "oid4vc-verifier-endpoint-hono"
+
+[observability]
+enabled = true

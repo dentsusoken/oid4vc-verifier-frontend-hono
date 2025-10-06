@@ -1,18 +1,45 @@
-export interface Bindings {
-  AWS_ACCESS_KEY_ID: string;
-  AWS_SECRET_ACCESS_KEY: string;
-  TABLE_NAME: string;
-  API_BASE_URL_VERIFIER_FRONTEND: string;
-  INIT_TRANSACTION_PATH: string;
-  WALLET_RESPONSE_PATH: string;
-  WALLET_URL: string;
-  PUBLIC_URL_VERIFIER_FRONTEND: string;
-  PRESENTATION_ID_KV: KVNamespace;
-  BACKEND: Service;
-  [key: string]: unknown;
-  DEPLOY_ENV: 'cloudflare' | 'lambda' | 'local';
-}
+import { LambdaEvent, LambdaContext } from 'hono/aws-lambda';
+import { Session, SessionSchemas } from '@vecrea/oid4vc-verifier-frontend-core';
+import { Env as DynamoDBEnv } from '@squilla/hono-aws-middlewares/dynamodb';
+import { Env as SecretsManagerEnv } from '@squilla/hono-aws-middlewares/secrets-manager';
+import { DurableObjectBase } from './adapters/out/session/cloudflare';
 
-export interface Env {
-  Bindings: Bindings;
-}
+export type BaseBindings = {
+  API_BASE_URL: string;
+  INIT_TRANSACTION_PATH: string;
+  GET_WALLET_RESPONSE_PATH: string;
+  WALLET_URL: string;
+  PUBLIC_URL: string;
+};
+
+export type CloudflareBindings = BaseBindings & {
+  // PRESENTATION_ID_KV: KVNamespace;
+  BACKEND: Service;
+  SESSION: DurableObjectNamespace<DurableObjectBase>;
+};
+
+export type AwsSecrets = BaseBindings;
+
+export type AwsBindings = {
+  event: LambdaEvent;
+  lambdaContext: LambdaContext;
+};
+
+export type Bindings = CloudflareBindings | AwsBindings;
+
+export type Variables = {
+  SESSION: Session<SessionSchemas>;
+};
+
+export type CloudflareEnv = {
+  Bindings: CloudflareBindings;
+  Variables: Variables;
+};
+
+export type AwsEnv = {
+  Bindings: AwsBindings & AwsSecrets;
+  Variables: Variables;
+} & DynamoDBEnv &
+  SecretsManagerEnv;
+
+export type Env = CloudflareEnv | AwsEnv;

@@ -1,16 +1,21 @@
-import { Hono } from "hono";
-import { FrontendApi } from "./adapters/input/FrontendApi";
-import { HonoConfiguration } from "./di/HonoConfiguration";
+import { Hono } from 'hono';
+import { FrontendApi } from './adapters/input/FrontendApi';
+import { ConfigurationImpl, getDI } from './di/cloudflare';
+import { sessionMiddleware } from './middleware/cloudflare';
 
-const configuration = new HonoConfiguration();
+const configuration = new ConfigurationImpl();
 const api = new FrontendApi(
-  configuration.homePath,
-  configuration.initPath,
-  configuration.resultPath
+  configuration.homeViewPath(),
+  configuration.initTransactionViewPath(),
+  configuration.resultViewPath(),
+  getDI,
 );
 
 const app = new Hono()
-  .get("/", (c) => c.redirect(configuration.homePath))
-  .route("/", api.route);
+  .use(sessionMiddleware)
+  .get('/', (c) => c.redirect(configuration.homeViewPath()))
+  .route('/', api.route);
 
+  
+export { DurableObjectBase } from './adapters/out/session/cloudflare';
 export default app;

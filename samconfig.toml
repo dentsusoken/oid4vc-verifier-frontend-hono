@@ -1,0 +1,13 @@
+version = 0.1
+
+# Development
+[default.deploy.parameters]
+stack_name = "oid4vc-verifier-frontend"
+resolve_s3 = true
+s3_prefix = "oid4vc-verifier-frontend"
+region = "ap-northeast-1"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
+confirm_changeset = false
+disable_rollback = false
+parameter_overrides = "ApiStageName=dev"

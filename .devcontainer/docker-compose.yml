@@ -1,35 +1,50 @@
-version: '3.8'
-
 services:
   app:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
+      args:
+        http_proxy: ${http_proxy}
+        HTTP_PROXY: ${HTTP_PROXY}
+        https_proxy: ${https_proxy}
+        HTTPS_PROXY: ${HTTPS_PROXY}
+        no_proxy: ${no_proxy}
+        NO_PROXY: ${NO_PROXY}
     volumes:
-      - ..:/workspace:cached
+      - ..:/app:cached
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/usr/bin/docker:/usr/bin/docker:ro'
+    depends_on:
+      - localstack
     command: sleep infinity
-    env_file: ../.env.lambda.local
-    networks:
-      - dev-network
-    working_dir: /workspace
+    env_file:
+      - ../.env
+    environment:
+      - AWS_ACCESS_KEY_ID=${LOCALSTACK_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${LOCALSTACK_SECRET_ACCESS_KEY}
+      - AWS_DEFAULT_REGION=${LOCALSTACK_REGION}
+      - AWS_ENDPOINT_URL=${LOCALSTACK_ENDPOINT_URL}
+      - http_proxy
+      - HTTP_PROXY
+      - https_proxy
+      - HTTPS_PROXY
+      - no_proxy
+      - NO_PROXY
+
+  localstack:
+    image: localstack/localstack
     ports:
-      - "3000:3000"
-    init: true
+      - 24566:4566
+      - 24510-24559:4510-4559 # external services port range
+    environment:
+      - SERVICES=logs,lambda,apigateway,s3,cloudformation,iam,secretsmanager,dynamodb
+      - OUTBOUND_HTTP_PROXY=${HTTP_PROXY}
+      - OUTBOUND_HTTPS_PROXY=${HTTPS_PROXY}
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:4566/_localstack/health']
 
-  dynamodb:
-    image: amazon/dynamodb-local:latest
-    container_name: dynamodb-verifier-frontend
-    ports:
-      - 8000:8000
-    command: -jar DynamoDBLocal.jar -inMemory -sharedDb
-    networks:
-      - dev-network
-
-networks:
-  dev-network:
-    name: hono-lambda-dynamodb_devcontainer_dev-network
-    driver: bridge
-
-# 環境変数
-# DYNAMODB_ENDPOINT=http://dynamodb-${COMPOSE_PROJECT_NAME}:8000
-
+volumes:
+  localstack_data:

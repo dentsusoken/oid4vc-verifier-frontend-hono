@@ -2,44 +2,39 @@
   "name": "oid4vc-verifier-frontend-hono",
   "type": "module",
   "scripts": {
-    "build": "esbuild --bundle --outfile=./dist/index.js --platform=node --target=node20 ./src/lambda.ts",
-    "zip": "zip -j lambda.zip dist/index.js",
-    "dev": "wrangler dev src/index.ts",
+    "dev": "NODE_ENV=development wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts",
-    "build-container": "sam build --use-container --build-image public.ecr.aws/sam/build-nodejs20.x --debug --skip-pull-image",
-    "start-api": "sam local start-api --host 0.0.0.0 --warm-containers EAGER --debug --container-host host.docker.internal --container-host-interface 0.0.0.0 --docker-network hono-lambda-dynamodb_devcontainer_dev-network",
-    "emulate:lambda": "npm run build && npm run build-container && npm run start-api",
-    "test": "vitest"
+    "build": "esbuild src/aws-lambda.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.709.0",
-    "@aws-sdk/lib-dynamodb": "^3.709.0",
+    "@aws-sdk/client-dynamodb": "^3.896.0",
+    "@aws-sdk/client-secrets-manager": "^3.896.0",
+    "@aws-sdk/lib-dynamodb": "^3.896.0",
+    "@squilla/hono-aws-middlewares": "^1.1.1",
     "cbor-x": "^1.6.0",
     "hono": "^4.5.5",
-    "mdoc-cbor-ts": "file:../mdoc-cbor-ts",
-    "oid4vc-prex": "file:../oid4vc-prex",
     "qrcode": "^1.5.4",
+    "qrcode.react": "^4.2.0",
     "ua-parser-js": "^0.7.39",
     "uuid": "^10.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@aws-cdk/aws-apigatewayv2-alpha": "^2.114.1-alpha.0",
-    "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.114.1-alpha.0",
     "@cloudflare/workers-types": "^4.20240529.0",
-    "@types/node": "^22.13.10",
+    "@types/aws-lambda": "^8.10.153",
+    "@types/node": "^24.2.0",
+    "esbuild": "^0.25.10",
     "@types/qrcode": "^1.5.5",
     "@types/ua-parser-js": "^0.7.39",
     "@types/uuid": "^10.0.0",
-    "aws-cdk": "^2.114.1",
-    "aws-cdk-lib": "^2.114.1",
-    "constructs": "^10.3.0",
-    "esbuild": "^0.25.4",
-    "serverless": "^3.38.0",
-    "serverless-esbuild": "^1.48.5",
-    "serverless-offline": "^13.9.0",
     "tsx": "^4.6.0",
     "vitest": "^3.1.4",
     "wrangler": "^4.15.2"
+  },
+  "peerDependencies": {
+    "@vecrea/oid4vc-core": "^0.1.0",
+    "@vecrea/oid4vc-prex": "^0.1.0",
+    "mdoc-cbor-ts": "dentsusoken/mdoc-cbor-ts#d6bc31260b3a6ea9b85a950e1e38fa46019c07c0",
+    "@vecrea/oid4vc-verifier-frontend-core": "dentsusoken/oid4vc-verifier-frontend-core#f8ef90d5f83d3ae24979bfdab0e235bd99407e76"
   }
 }

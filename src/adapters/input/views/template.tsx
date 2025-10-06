@@ -1,6 +1,14 @@
 import { html } from 'hono/html';
-import { FC } from 'hono/jsx';
+import { Child, FC } from 'hono/jsx';
 
+/**
+ * Tailwind CSS configuration for custom theme extensions
+ *
+ * Defines custom font families and theme extensions that are used
+ * throughout the application for consistent styling.
+ *
+ * @private
+ */
 const tailwindConfig = html`
   <script>
     tailwind.config = {
@@ -15,9 +23,59 @@ const tailwindConfig = html`
   </script>
 `;
 
-export const Template: FC = ({ children }) => {
+/**
+ * Props interface for the Template component
+ *
+ * @public
+ */
+export interface TemplateProps {
+  /** Child components to be rendered within the template */
+  children: Child;
+}
+
+/**
+ * Base HTML template component for the OID4VC verifier frontend application
+ *
+ * This component provides the foundational HTML structure, metadata, and styling
+ * for all pages in the verifier application. It includes:
+ *
+ * - **Responsive Design**: Mobile-first viewport configuration
+ * - **SEO Optimization**: Comprehensive meta tags for search engines
+ * - **External Resources**: Font Awesome icons and Google Fonts integration
+ * - **Styling Framework**: Tailwind CSS with custom configuration
+ * - **Consistent Layout**: Header, main content area, and footer structure
+ * - **Accessibility**: Semantic HTML structure and proper heading hierarchy
+ *
+ * ## Design System
+ *
+ * The template establishes a consistent design system with:
+ * - **Color Scheme**: Green primary colors with gray accents
+ * - **Typography**: Roboto font family for readability
+ * - **Layout**: Flexbox-based responsive layout
+ * - **Spacing**: Consistent padding and margin values
+ *
+ * ## Usage
+ *
+ * This template is automatically applied to all pages through the Hono JSX renderer
+ * middleware, ensuring consistent presentation across the entire application.
+ *
+ * @example
+ * ```typescript
+ * // Template is used automatically via JSX renderer middleware
+ * app.use('*', jsxRenderer(({ children }) => <Template>{children}</Template>));
+ *
+ * // Individual pages are wrapped automatically
+ * return c.render(<HomePage />); // Will be wrapped in Template
+ * ```
+ *
+ * @param props - Component properties
+ * @returns JSX element representing the complete HTML document structure
+ *
+ * @public
+ */
+export const Template: FC<TemplateProps> = ({ children }) => {
   return (
-    <html>
+    <html lang="en">
       <head>
         <title>Verifier Frontend</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />

@@ -1,22 +1,11 @@
 {
   "name": "${localWorkspaceFolderBasename}",
-  "dockerComposeFile": "docker-compose.yml",
+  "dockerComposeFile": "./docker-compose.yml",
   "service": "app",
-  "workspaceFolder": "/workspace",
+  "runServices": ["localstack", "app"],
+  "workspaceFolder": "/app",
   "customizations": {
-    "vscode": {
-      "extensions": [
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
-        "ms-azuretools.vscode-docker"
-      ]
-    }
+    "vscode": { "extensions": ["esbenp.prettier-vscode", "eamodio.gitlens"] }
   },
-  "features": {
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
-  },
-  "postCreateCommand": "chmod +x .devcontainer/createTable.sh && .devcontainer/createTable.sh",
-  "forwardPorts": [
-    3000
-  ]
+  "postCreateCommand": "npm install"
 }
