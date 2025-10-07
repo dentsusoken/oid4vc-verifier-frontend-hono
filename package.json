@@ -2,6 +2,7 @@
   "name": "oid4vc-verifier-frontend-hono",
   "type": "module",
   "scripts": {
+    "postinstall": "patch-package",
     "dev": "NODE_ENV=development wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts",
     "build": "esbuild src/aws-lambda.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js"
@@ -23,10 +24,11 @@
     "@cloudflare/workers-types": "^4.20240529.0",
     "@types/aws-lambda": "^8.10.153",
     "@types/node": "^24.2.0",
-    "esbuild": "^0.25.10",
     "@types/qrcode": "^1.5.5",
     "@types/ua-parser-js": "^0.7.39",
     "@types/uuid": "^10.0.0",
+    "esbuild": "^0.25.10",
+    "patch-package": "^8.0.1",
     "tsx": "^4.6.0",
     "vitest": "^3.1.4",
     "wrangler": "^4.15.2"
@@ -34,7 +36,7 @@
   "peerDependencies": {
     "@vecrea/oid4vc-core": "^0.1.0",
     "@vecrea/oid4vc-prex": "^0.1.0",
-    "mdoc-cbor-ts": "dentsusoken/mdoc-cbor-ts#d6bc31260b3a6ea9b85a950e1e38fa46019c07c0",
-    "@vecrea/oid4vc-verifier-frontend-core": "dentsusoken/oid4vc-verifier-frontend-core#f8ef90d5f83d3ae24979bfdab0e235bd99407e76"
+    "@vecrea/oid4vc-verifier-frontend-core": "dentsusoken/oid4vc-verifier-frontend-core#f8ef90d5f83d3ae24979bfdab0e235bd99407e76",
+    "mdoc-cbor-ts": "dentsusoken/mdoc-cbor-ts#d6bc31260b3a6ea9b85a950e1e38fa46019c07c0"
   }
 }

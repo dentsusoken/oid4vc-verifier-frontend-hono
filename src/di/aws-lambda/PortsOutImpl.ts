@@ -1,13 +1,12 @@
-import {
-  AbstractPortsOut,
-  GenerateWalletResponseRedirectUriTemplate,
-} from '@vecrea/oid4vc-verifier-frontend-core';
+import { GenerateWalletResponseRedirectUriTemplate } from '@vecrea/oid4vc-verifier-frontend-core';
 import { Context } from 'hono';
 import { AwsEnv } from '../../env';
 import { PRESENTATION_DEFINITIONS } from '../../adapters/out/prex';
 import { mdocVerifier } from '../../adapters/out/mdoc/MdocVerifier';
+import { AbstractExtendedPortsOut } from '../AbstractExtendedPortsOut';
+import { DigitalCredentialsSession } from '../../ports/out/session';
 
-export class PortsOutImpl extends AbstractPortsOut<
+export class PortsOutImpl extends AbstractExtendedPortsOut<
   typeof PRESENTATION_DEFINITIONS
 > {
   readonly #ctx: Context<AwsEnv>;
@@ -35,5 +34,9 @@ export class PortsOutImpl extends AbstractPortsOut<
 
   session() {
     return this.#ctx.get('SESSION');
+  }
+
+  dcSession(): DigitalCredentialsSession {
+    return this.#ctx.get('DC_SESSION');
   }
 }

@@ -1,0 +1,15 @@
+# This is a bug of older version of mdoc-cbor-ts
+# Remove this patch after updating mdoc-cbor-ts
+diff --git a/node_modules/mdoc-cbor-ts/dist/es/index.js b/node_modules/mdoc-cbor-ts/dist/es/index.js
+index 5d31f60..c2d5850 100644
+--- a/node_modules/mdoc-cbor-ts/dist/es/index.js
++++ b/node_modules/mdoc-cbor-ts/dist/es/index.js
+@@ -3130,7 +3130,7 @@ const me = M([
+   keyAuthorizations: Ar.optional(),
+   keyInfo: Cr.optional()
+ }).parse(Object.fromEntries(r))), Nr = me, Rr = kr(["SHA-256", "SHA-384", "SHA-512"]), jr = M([
+-  Z().int().positive(),
++  Z().int().nonnegative(),
+   b().regex(/^\d+$/).transform((r) => Number(r))
+ ]), Zr = O(jr, Nr).refine((r) => r.size > 0).transform((r) => Object.fromEntries(r)), Nt = wr([
+   M([E(Uint8Array), je]),

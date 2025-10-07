@@ -8,6 +8,7 @@ import { DynamoDB } from '@vecrea/oid4vc-core';
 import { Env as SecretsManagerEnv } from '@squilla/hono-aws-middlewares/secrets-manager';
 import { Env } from '../env';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { DCSessionDynamoDB } from '../adapters/out/session/aws/DCSessionDynamoDB';
 
 const SESSION_COOKIE_NAME = 'session';
 const EXPIRATION_TTL = 60 * 60 * 24; // 1 day
@@ -23,19 +24,17 @@ export const sessionMiddleware = createMiddleware(
     const config = new ConfigurationImpl(c);
     const sessionId =
       getCookie(c, SESSION_COOKIE_NAME) || generateAndSetSessionId(c);
+    const dynamoDB = new DynamoDB(
+      DynamoDBDocumentClient.from(c.get('DynamoDB')),
+      config.dynamoDBTable()
+    );
+    c.set('SESSION', new SessionDynamoDB(dynamoDB, sessionId, EXPIRATION_TTL));
     c.set(
-      'SESSION',
-      new SessionDynamoDB(
-        new DynamoDB(
-          DynamoDBDocumentClient.from(c.get('DynamoDB')),
-          config.dynamoDBTable(),
-        ),
-        sessionId,
-        EXPIRATION_TTL,
-      ),
+      'DC_SESSION',
+      new DCSessionDynamoDB(dynamoDB, sessionId, EXPIRATION_TTL)
     );
     await next();
-  },
+  }
 );
 
 /**
@@ -55,5 +54,5 @@ export const setupLambdaMiddleware = createMiddleware<SecretsManagerEnv & Env>(
       ...secret,
     };
     return next();
-  },
+  }
 );

@@ -2,7 +2,8 @@ import { LambdaEvent, LambdaContext } from 'hono/aws-lambda';
 import { Session, SessionSchemas } from '@vecrea/oid4vc-verifier-frontend-core';
 import { Env as DynamoDBEnv } from '@squilla/hono-aws-middlewares/dynamodb';
 import { Env as SecretsManagerEnv } from '@squilla/hono-aws-middlewares/secrets-manager';
-import { DurableObjectBase } from './adapters/out/session/cloudflare';
+import { DurableObjectBase } from './adapters/out/database/cloudflare';
+import { DigitalCredentialsSession } from './ports/out/session';
 
 export type BaseBindings = {
   API_BASE_URL: string;
@@ -29,6 +30,7 @@ export type Bindings = CloudflareBindings | AwsBindings;
 
 export type Variables = {
   SESSION: Session<SessionSchemas>;
+  DC_SESSION: DigitalCredentialsSession;
 };
 
 export type CloudflareEnv = {

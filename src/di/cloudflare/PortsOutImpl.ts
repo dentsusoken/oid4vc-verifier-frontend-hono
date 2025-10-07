@@ -1,15 +1,13 @@
-import {
-  AbstractPortsOut,
-  Configuration,
-  Fetcher,
-} from '@vecrea/oid4vc-verifier-frontend-core';
+import { Fetcher } from '@vecrea/oid4vc-verifier-frontend-core';
 import { Context } from 'hono';
 import { CloudflareEnv } from '../../env';
 import { PRESENTATION_DEFINITIONS } from '../../adapters/out/prex';
 import { mdocVerifier } from '../../adapters/out/mdoc/MdocVerifier';
 import { WorkerToWorkerFetcher } from '../../adapters/out/http/cloudflare';
+import { AbstractExtendedPortsOut } from '../AbstractExtendedPortsOut';
+import { DigitalCredentialsSession } from '../../ports/out/session';
 
-export class PortsOutImpl extends AbstractPortsOut<
+export class PortsOutImpl extends AbstractExtendedPortsOut<
   typeof PRESENTATION_DEFINITIONS
 > {
   readonly #ctx: Context<CloudflareEnv>;
@@ -29,6 +27,10 @@ export class PortsOutImpl extends AbstractPortsOut<
 
   session() {
     return this.#ctx.get('SESSION');
+  }
+
+  dcSession(): DigitalCredentialsSession {
+    return this.#ctx.get('DC_SESSION');
   }
 
   fetcher(): Fetcher {
