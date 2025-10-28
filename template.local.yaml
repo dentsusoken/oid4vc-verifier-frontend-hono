@@ -110,7 +110,7 @@ Resources:
           Type: Api
           Properties:
             Path: /result
-            Method: POST
+            Method: GET
             RestApiId: !Ref OID4VCVerifierFrontendApi
     Metadata:
       BuildMethod: esbuild
